@@ -14,6 +14,7 @@ from __future__ import absolute_import
 
 import six
 
+from collections import OrderedDict
 from .triangle import json_validate
 from .widget import Widget
 from .types import Schema
@@ -69,6 +70,8 @@ class Form(six.with_metaclass(FormBase)):
         resulting JSON from this form.
         """
         self.custom_schema = schema
+        self.__widgets = OrderedDict(sorted(self.__widgets.items(),
+                                            key=lambda (k, v): id(v)))
 
     @property
     def schema(self):
