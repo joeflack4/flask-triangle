@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
 
@@ -11,7 +11,7 @@ setup(
     author_email='mdp@arjel.fr',
     description=('Integration of Angular and Flask.'),
     long_description=open('README.rst').read(),
-    packages=['flask_triangle'],
+    packages=find_packages(),
     zip_safe=False,
     platforms='any',
     install_requires=['flask', 'jsonschema', 'six'],
