@@ -35,3 +35,7 @@ nosetests.xml
 .pydevproject
 
 debug.py
+
+
+# Vim
+*.swp

@@ -35,21 +35,21 @@ class TestWidget(object):
         self.widget.name = u'test'
         assert_in(u'name="test"', self.widget.attributes())
 
-    def test_legend_property(self):
+    def test_unset_label_property(self):
         """
-        The property legend returns the same value of the name property if
+        The property label returns the same value of the name property if
         none is set
         """
-        assert_equal(self.widget.legend, self.widget.name)
+        assert_equal(self.widget.label, self.widget.name)
 
-    def test_legend_property(self):
+    def test_set_label_property(self):
         """
-        The property legend returns the same value of the name property if
+        The property label returns the same value of the name property if
         none is set
         """
-        self.widget.legend = u'legend'
-        assert_equal(self.widget.legend, u'legend')
-        assert_not_equal(self.widget.legend, self.widget.name)
+        self.widget.label = u'label'
+        assert_equal(self.widget.label, u'label')
+        assert_not_equal(self.widget.label, self.widget.name)
 
     def test_kwargs(self):
         """Additional keyword arguments are treated as custom parameters."""

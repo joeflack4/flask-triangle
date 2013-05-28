@@ -19,7 +19,7 @@ class Widget(object):
     as_html = u'text'
 
     def __init__(self, bind, name=None, id_=None, class_=None, validators=None,
-                 legend=None, description=None, **kwargs):
+                 label=None, description=None, **kwargs):
         """
         :arg bind: An ``angular expression``. Two-way Angular's data binding
         using ngModel directive. See `Angular's ngModel directive` for more
@@ -44,8 +44,8 @@ class Widget(object):
         be client-side, server-side or both. See ``Validators`` in this
         documentation for more details.
 
-        :arg legend: A ``unicode`` string or an ``angular expression``. An
-        optional legend for the current widget.
+        :arg label: A ``unicode`` string or an ``angular expression``. An
+        optional label for the current widget.
 
         :arg description: A ``unicode`` string or an ``angular expression``. An
         optional description for current widget.
@@ -59,7 +59,7 @@ class Widget(object):
             http://docs.angularjs.org/api/
         """
 
-        self._legend = legend
+        self._label = label
         self.description = description
         self.validators = validators if validators is not None else []
 
@@ -95,14 +95,14 @@ class Widget(object):
         self.attributes[u'name'] = value
 
     @property
-    def legend(self):
-        if self._legend is None:
+    def label(self):
+        if self._label is None:
             return self.name
-        return self._legend
+        return self._label
 
-    @legend.setter
-    def legend(self, value):
-        self._legend = value
+    @label.setter
+    def label(self, value):
+        self._label = value
 
     @property
     def schema(self):
