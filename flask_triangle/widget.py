@@ -59,7 +59,7 @@ class Widget(object):
             http://docs.angularjs.org/api/
         """
 
-        self.legend = legend
+        self._legend = legend
         self.description = description
         self.validators = validators if validators is not None else []
 
@@ -90,6 +90,16 @@ class Widget(object):
     @name.setter
     def name(self, value):
         self.attributes[u'name'] = value
+
+    @property
+    def legend(self):
+        if self._legend is None:
+            return self.name
+        return self._legend
+
+    @legend.setter
+    def legend(self, value):
+        self._legend = value
 
     @property
     def schema(self):
