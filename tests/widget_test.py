@@ -7,7 +7,7 @@ from flask_triangle.validators import Required
 from jsonschema import validate
 
 from nose.tools import raises, assert_true, assert_in, assert_not_in, \
-                       assert_equal
+                       assert_equal, assert_not_equal
 
 
 class TestWidget(object):
@@ -34,6 +34,22 @@ class TestWidget(object):
         """The name can be set as a distinct property."""
         self.widget.name = u'test'
         assert_in(u'name="test"', self.widget.attributes())
+
+    def test_legend_property(self):
+        """
+        The property legend returns the same value of the name property if
+        none is set
+        """
+        assert_equal(self.widget.legend, self.widget.name)
+
+    def test_legend_property(self):
+        """
+        The property legend returns the same value of the name property if
+        none is set
+        """
+        self.widget.legend = u'legend'
+        assert_equal(self.widget.legend, u'legend')
+        assert_not_equal(self.widget.legend, self.widget.name)
 
     def test_kwargs(self):
         """Additional keyword arguments are treated as custom parameters."""
@@ -127,3 +143,11 @@ class TestWidget(object):
         test = Widget(u'field', u'name', validators=[Required()])
         assert_in(u'required', test.schema)
         assert_in(u'field', test.schema.get(u'required', []))
+
+    def test_validators_attributes_in_widget_attributes(self):
+        """
+        When the field has one or more validators with attribute impacts, the
+        attributes of each validator is merged in the widget attributes.
+        """
+        test = Widget(u'field', u'name', validators=[Required()])
+        assert_in(u'required', test.attributes)

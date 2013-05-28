@@ -76,6 +76,9 @@ class Widget(object):
             else:
                 self.attributes[u'class'] = class_
 
+        for validator in self.validators:
+            self.attributes.update(validator.attributes)
+
         for k, v in kwargs.items():
             if re.match(r'^ng[A-Z].*$', k):
                 k = u'-'.join((item for item in re.split(r'([A-Z][^A-Z]+)', k)
