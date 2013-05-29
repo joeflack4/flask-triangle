@@ -59,8 +59,10 @@ class Widget(object):
             http://docs.angularjs.org/api/
         """
 
+        self._schema = None
         self._label = label
         self.description = description
+
         self.validators = [Properties(bind, self.as_json)]
         if validators is not None:
             self.validators += validators
@@ -70,7 +72,6 @@ class Widget(object):
                                       u'ng-model': bind})
 
         # manage attributes
-
         if id_ is not None:
             self.attributes[u'id'] = id_
 
@@ -88,10 +89,6 @@ class Widget(object):
                 k = u'-'.join((item for item in re.split(r'([A-Z][^A-Z]+)', k)
                                if item)).lower()
             self.attributes[k] = v
-
-        # manage json-schema
-
-        self.schema = self.build_schema()
 
     # name is a special attribute also acting as a property.
     @property
@@ -111,6 +108,16 @@ class Widget(object):
     @label.setter
     def label(self, value):
         self._label = value
+
+    @property
+    def schema(self):
+        """
+        Lazy loading of the schema.
+        """
+        if self._schema is None:
+            self._schema = self.build_schema()
+
+        return self._schema
 
     def build_schema(self):
         """
