@@ -4,7 +4,8 @@ flask_triangle.
 """
 
 
-from flask_triangle.validator import Validator
+from flask_triangle.validators.common import Validator
+from flask_triangle.types import Schema, Attributes
 
 
 class Required(Validator):
@@ -20,6 +21,8 @@ class Required(Validator):
     consider this field as optional.
     """
 
+    alter_schema = (True, True, False)
+
     def __init__(self, condition=True):
         """
         :arg condition: An ``angular expression`` or a boolean value. If
@@ -33,16 +36,16 @@ class Required(Validator):
             http://docs.angularjs.org/api/ng.directive:input
         """
 
-        super(Required, self).__init__()
-        if condition is True:
-            self.attributes[u'required'] = None
-        elif condition:
-            self.attributes[u'ng-required'] = condition
+        self.condition = condition
 
-    def is_required(self):
-        """
-        Returns `True` if the field is inconditionally required, `False`
-        otherwise.
-        """
+    def schema(self, **kwargs):
+        if self.condition is True:
+            return Schema({u'required': [u'{child}'.format(**kwargs)]})
+        return Schema()
 
-        return 'required' in self.attributes
+    def attributes(self):
+        if self.condition is True:
+            return Attributes({u'required': None})
+        if self.condition:
+            return Attributes({u'ng-required': self.condition})
+        return Attributes()

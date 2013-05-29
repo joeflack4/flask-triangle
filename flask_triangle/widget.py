@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 from .html import HTMLString
 from .types import Attributes, Schema
-from .validators import Required
+from .validators import Properties
 import re
 
 
@@ -61,11 +61,15 @@ class Widget(object):
 
         self._label = label
         self.description = description
-        self.validators = validators if validators is not None else []
+        self.validators = [Properties(bind, self.as_json)]
+        if validators is not None:
+            self.validators += validators
 
         self.attributes = Attributes({u'name': name,
                                       u'type': self.as_html,
                                       u'ng-model': bind})
+
+        # manage attributes
 
         if id_ is not None:
             self.attributes[u'id'] = id_
@@ -77,13 +81,17 @@ class Widget(object):
                 self.attributes[u'class'] = class_
 
         for validator in self.validators:
-            self.attributes.update(validator.attributes)
+            self.attributes.update(validator.attributes())
 
         for k, v in kwargs.items():
             if re.match(r'^ng[A-Z].*$', k):
                 k = u'-'.join((item for item in re.split(r'([A-Z][^A-Z]+)', k)
                                if item)).lower()
             self.attributes[k] = v
+
+        # manage json-schema
+
+        self.schema = self.build_schema()
 
     # name is a special attribute also acting as a property.
     @property
@@ -104,32 +112,40 @@ class Widget(object):
     def label(self, value):
         self._label = value
 
-    @property
-    def schema(self):
+    def build_schema(self):
         """
-        Returns a json-schema dict to validate this specific widget.
+        Builds the json-schema of a widget.
+
+        The json-schema skeleton is built by the ``Properties`` validator. Each
+        other validators will alter this skeleton by adding new properties.
+        This method is quite complex ( On*m where n is the depth of the json
+        binding an m the number of validators - at least one - ).
         """
-        levels = self.attributes.get(u'ng-model').split(u'.')
-        # required is a special validator not directly affecting the current
-        # properties but all it's nesting chain.
-        required = any(val.is_required() for val in self.validators
-                       if type(val) is Required)
+        # The validation schema is built from the validators.
 
-        root = Schema({u'type': u'object', u'properties': {}})
+        levels = self.attributes[u'ng-model'].split(u'.')
 
-        parent = root
-        for child in levels[:-1]:
-            new = {child: {u'type': u'object', u'properties': {}}}
-            parent.get(u'properties').update(new)
-            if required:
-                parent.update({u'required': [child]})
-            parent = new.get(child)
+        res = Schema()
 
-        parent.get(u'properties').update({levels[-1]: {u'type': self.as_json}})
-        if required:
-            parent.update({u'required': [levels[-1]]})
+        for validator in self.validators:
 
-        return root
+            root, nodes, leaf = validator.alter_schema
+
+            current = res
+            for i, node in enumerate(levels):
+                if node == levels[0] and root:
+                    current.update(validator.schema(child=node, name=None))
+                current = current.get(u'properties').get(node)
+                if current is None:
+                    break
+                if node != levels[-1] and nodes:
+                    current.update(validator.schema(child=levels[i+1],
+                                                    name=node))
+                if node == levels[-1] and leaf:
+                    current.update(validator.schema(child=None, name=node))
+
+        return res
+
 
     def html(self):
         """
@@ -137,9 +153,6 @@ class Widget(object):
         """
         if self.name is None:
             raise ValueError(u'The required `name` property is not set.')
-        if self.attributes.get(u'ng-model', None) is None:
-            raise ValueError(u'The field is unbound.')
-
         return u'<{tag} {attr}/>'.format(tag=self.tag, attr=self.attributes())
 
     def __call__(self, **kwargs):
