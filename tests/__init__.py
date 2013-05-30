@@ -6,3 +6,4 @@ from .widget.validation import TestDeclaration
 
 from .validators.common import TestValidator
 from .validators.required import TestRequired
+from .validators.patterns import TestRegexp
