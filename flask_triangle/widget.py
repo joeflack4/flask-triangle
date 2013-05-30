@@ -166,4 +166,5 @@ class Widget(object):
         """
         Call to format the HTML string.
         """
-        return HTMLString(self.html().format(**kwargs))
+        res = self.html().replace(u'"{{', u'"{{{{').replace(u'}}"', u'}}}}"')
+        return HTMLString(res.format(**kwargs))

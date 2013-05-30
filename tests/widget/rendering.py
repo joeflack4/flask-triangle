@@ -7,7 +7,7 @@ Test widget rendering to HTML.
 import re
 
 from flask_triangle.widget import Widget
-from nose.tools import assert_true
+from nose.tools import assert_true, assert_in
 
 
 class TestRendering(object):
@@ -27,3 +27,26 @@ class TestRendering(object):
         """
         assert_true(re.match(r'<("[^"]*"|\'[^\']*\'|[^\'">])*>',
                     self.widget()))
+
+    def test_rendering_format(self):
+        """
+        Rendering of widget is formatabale
+        """
+        test = Widget(u'bound', name=u'name', string_format='{test}')
+        assert_in('string_format="ok"', test(test=u'ok'))
+
+    def test_rendering_angular(self):
+        """
+        If double bracket pairs "{{ }}" are used to insert angular expression
+        are used, they are automatically escaped to be maintainded despites
+        string format.
+        """
+        test = Widget(u'bound', name=u'name', angular='{{true}}')
+        assert_in('angular="{{true}}"', test())
+
+    def test_rendering_angular_format(self):
+        """
+        Rendering of widget is formatable inside doubled bracketed expressions.
+        """
+        test = Widget(u'bound', name=u'name', angular='{{{test}}}')
+        assert_in('angular="{{ok}}"', test(test=u'ok'))
