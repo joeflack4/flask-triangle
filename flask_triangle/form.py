@@ -64,25 +64,22 @@ class Form(six.with_metaclass(FormBase)):
 
     __widgets = None
 
-    def __init__(self, schema=None):
+    def __init__(self, name, schema=None):
         """
         :arg schema: A ``dict``. A custom schema to describe how-to validate
         resulting JSON from this form.
         """
-        self.custom_schema = schema
+        if schema is not None:
+            self.schema = Schema(schema)
+        else:
+            self.schema = Schema({})
+            for widget in self:
+                self.schema.update(widget.schema)
+
+        self.name = name
+
         self.__widgets = OrderedDict(sorted(self.__widgets.items(),
                                             key=lambda (k, v): id(v)))
-
-    @property
-    def schema(self):
-
-        if self.custom_schema is not None:
-            return self.custom_schema
-
-        res = Schema({})
-        for widget in self:
-            res.update(widget.schema)
-        return res
 
     def validate(self):
         """
