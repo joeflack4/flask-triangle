@@ -37,16 +37,14 @@ class TestRendering(object):
 
     def test_rendering_angular(self):
         """
-        If double bracket pairs "{{ }}" are used to insert angular expression
-        are used, they are automatically escaped to be maintainded despites
-        string format.
+        Attributes suffixed by `|angular` are angular expressions.
         """
-        test = Widget(u'bound', name=u'name', angular='{{true}}')
+        test = Widget(u'bound', name=u'name', angular='true|angular')
         assert_in('angular="{{true}}"', test())
 
     def test_rendering_angular_format(self):
         """
-        Rendering of widget is formatable inside doubled bracketed expressions.
+        Rendering of widget is formatable inside angular expressions.
         """
-        test = Widget(u'bound', name=u'name', angular='{{{test}}}')
+        test = Widget(u'bound', name=u'name', angular='{test}|angular')
         assert_in('angular="{{ok}}"', test(test=u'ok'))

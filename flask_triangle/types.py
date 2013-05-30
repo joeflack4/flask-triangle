@@ -21,6 +21,17 @@ class Attributes(dict):
     but the others as standard attributes.
     """
 
+    @staticmethod
+    def render(k, v):
+
+        if v is None:
+            return u'{k}'.format(k=k)
+
+        if v.endswith('|angular'):
+            return u'{k}="{{{{{{{{{v}}}}}}}}}"'.format(k=k, v=v[:-8])
+
+        return u'{k}="{v}"'.format(k=k, v=v)
+
     def __call__(self):
         """
         Returns a string containing every attributes, separated by spaces
@@ -29,13 +40,7 @@ class Attributes(dict):
             * `key="value"` for standard attributes
             * `key` for boolean attributes
         """
-        valued = u' '.join(u'{k}="{v}"'.format(k=k, v=v)
-                           for k, v in self.items() if v is not None)
-
-        boolean = u' '.join(u'{k}'.format(k=k) for k, v in self.items()
-                            if v is None)
-
-        return u' '.join((v for v in (valued, boolean) if v))
+        return u' '.join(self.render(k, v) for k, v in self.items())
 
 
 class Schema(dict):

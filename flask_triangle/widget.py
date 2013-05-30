@@ -153,18 +153,11 @@ class Widget(object):
 
         return res
 
-
-    def html(self):
-        """
-        Returns the valid HTML for the current widget.
-        """
-        if self.name is None:
-            raise ValueError(u'The required `name` property is not set.')
-        return u'<{tag} {attr}/>'.format(tag=self.tag, attr=self.attributes())
-
     def __call__(self, **kwargs):
         """
         Call to format the HTML string.
         """
-        res = self.html().replace(u'"{{', u'"{{{{').replace(u'}}"', u'}}}}"')
+        if self.name is None:
+            raise ValueError(u'The required `name` property is not set.')
+        res = u'<{tag} {attr}/>'.format(tag=self.tag, attr=self.attributes())
         return HTMLString(res.format(**kwargs))
