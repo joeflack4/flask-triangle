@@ -34,4 +34,4 @@ class Regexp(Validator):
 
     def attributes(self):
         res = self.regexp.replace(u'{', u'{{').replace(u'}', u'}}')
-        return Attributes({u'ng-pattern': res})
+        return Attributes({u'ng-pattern': u'/{}/'.format(res)})

@@ -24,8 +24,8 @@ class TestRegexp(object):
         escaped.
         """
         assert_in(u'ng-pattern', self.validator.attributes())
-        assert_equal(self.validator.attributes().get(u'ng-pattern'), 
-                     u'[A-Z]{{3}}')
+        assert_equal(self.validator.attributes().get(u'ng-pattern'),
+                     u'/[A-Z]{{3}}/')
 
     def test_schema(self):
         """
