@@ -119,6 +119,7 @@ class Widget(object):
 
         return self._schema
 
+    #TODO: Test this !
     def build_schema(self):
         """
         Builds the json-schema of a widget.
