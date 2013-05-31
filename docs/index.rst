@@ -5,7 +5,7 @@ Flask-Triangle
 Flask-Triangle is a flask extension to easily design reusable forms for your
 web application. It features a wide variety of inputs and many validators to
 control data submitted by your users. It's aimed to be used in an AngularJS
-environment. If you want more traditional forms, take a look to Flask-WTF_.
+environment. If you want more traditional forms, take a look at Flask-WTF_.
 
 The main goal of Flask-Triangle is to provide you with an easy way to achieve
 server-side validation to avoid hazardous or dirty data and client-side

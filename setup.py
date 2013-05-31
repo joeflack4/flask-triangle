@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 setup(
 
     name='Flask-Triangle',
-    version='0.2',
+    version='0.3',
     author='Morgan Delahaye-Prat',
     author_email='mdp@arjel.fr',
     description=('Integration of Angular and Flask.'),
@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     platforms='any',
-    install_requires=['flask', 'jsonschema', 'six'],
+    install_requires=['flask', 'jsonschema'],
     tests_require=['nose'],
     url='https://github.com/morgan-del/flask-triangle',
     license='BSD',
