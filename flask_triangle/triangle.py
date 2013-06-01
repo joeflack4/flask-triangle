@@ -23,7 +23,12 @@ class Triangle(object):
             self.init_app(app)
 
     def init_app(self, app):
-        pass
+        app.jinja_env.filters[u'angular'] = self.angular_str
+
+
+def angular_filter(string):
+    """A Jinja2 filter to generate double curly-bracketed string."""
+    return u'{{{{{}}}}}'.format(string)
 
 
 def json_validate(schema):
