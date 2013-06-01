@@ -23,7 +23,7 @@ class Triangle(object):
             self.init_app(app)
 
     def init_app(self, app):
-        app.jinja_env.filters[u'angular'] = self.angular_str
+        app.jinja_env.filters[u'angular'] = angular_filter
 
 
 def angular_filter(string):
