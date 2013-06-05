@@ -10,7 +10,7 @@
 """
 
 
-from flask import request
+from flask import request, abort
 from jsonschema import validate, SchemaError, ValidationError
 
 
