@@ -52,11 +52,12 @@ class Form(object):
                                 key = lambda(k): id(getattr(self, k)))
         self.name = name
 
-    #def validate(self):
-    #    """
-    #    Return a function decorator to validate JSON in the current request.
-    #    """
-    #    return json_validate(self.schema)
+    @property
+    def validate(self):
+        """
+        Return a function decorator to validate JSON in the current request.
+        """
+        return json_validate(self.schema)
 
     def __iter__(self):
         return (getattr(self, widget) for widget in self.__widgets)

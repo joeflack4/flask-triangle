@@ -43,8 +43,8 @@ def json_validate(schema):
 
     :arg schema: A json-schema dict to validate data against it.
     """
-    def wrapped_func(func):
-        def altered_func(*args, **kwargs):
+    def decorator(func):
+        def wrapfunc(*args, **kwargs):
             if request.json is None:
                 abort(415, u'Unsuported Media Type.'
                            u'Content-Type must by application/json')
@@ -57,5 +57,6 @@ def json_validate(schema):
                 abort(400, u'Bad Request.'
                            u'Sent JSON data is not valid.')
             return func(*args, **kwargs)
-        return altered_func
-    return wrapped_func
+        return wrapfunc
+
+    return decorator
