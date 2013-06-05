@@ -35,17 +35,24 @@ class Form(object):
 
         return obj
 
-    def __init__(self, name, schema=None):
+    def __init__(self, name, schema=None, root=None):
         """
         :arg schema: A ``dict``. A custom schema to describe how-to validate
         resulting JSON from this form.
+
+        :arg root: A ``string``. The name of the properties to use as
+        root of the JSON schema.
         """
+
         if schema is not None:
             self.schema = Schema(schema)
         else:
             self.schema = Schema({})
             for widget in self:
                 self.schema.update(widget.schema)
+
+        if root is not None:
+            self.schema = self.schema.get('properties').get(root, self.schema)
 
         # Sort all the widgets by their declaration order
         self.__widgets = sorted(self.__widgets,

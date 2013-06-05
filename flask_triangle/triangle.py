@@ -54,7 +54,7 @@ def json_validate(schema):
             except SchemaError:
                 abort(500)
             except ValidationError:
-                abort(400, u'Bad Request.'
+                abort(400, u'Bad Request. '
                            u'Sent JSON data is not valid.')
             return func(*args, **kwargs)
         return wrapfunc
