@@ -22,16 +22,30 @@ class Form(object):
     The Form acts as a container for multiple Widgets.
     """
 
-    __widgets = set()
+    __widgets = list()
 
-    def __new__(cls, *args, **kwargs):
-
-        obj = super(Form, cls).__new__(cls)
+    @classmethod
+    def register_widgets(cls):
 
         for k, v in cls.__dict__.items():
             if isinstance(v, Widget):
                 v.name = k
-                cls.__widgets.add(k)
+                if k not in cls.__widgets:
+                    cls.__widgets.append(k)
+
+        for parent in cls.__bases__:
+            if parent != Form:
+                parent.register_widgets()
+
+
+    def __new__(cls, *args, **kwargs):
+
+        obj = super(Form, cls).__new__(cls)
+        cls.register_widgets()
+
+        # Sort all the widgets by their declaration order
+        cls.__widgets = sorted(cls.__widgets,
+                               key = lambda(k): id(getattr(cls, k)))
 
         return obj
 
@@ -54,9 +68,6 @@ class Form(object):
         if root is not None:
             self.schema = self.schema.get('properties').get(root, self.schema)
 
-        # Sort all the widgets by their declaration order
-        self.__widgets = sorted(self.__widgets,
-                                key = lambda(k): id(getattr(self, k)))
         self.name = name
 
     @property
