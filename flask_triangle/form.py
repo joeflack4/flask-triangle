@@ -61,6 +61,7 @@ class Form(object):
             self.schema = Schema()
             for widget in self:
                 self.schema.merge(widget.schema)
+        self.schema.compile()
 
         if root is not None:
             self.schema = self.schema.get('properties').get(root, self.schema)
