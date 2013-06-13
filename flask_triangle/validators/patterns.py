@@ -4,8 +4,8 @@ flask_triangle.
 """
 
 
-from flask_triangle.validators.common import Validator
-from flask_triangle.types import Schema, Attributes
+from __future__ import absolute_import
+from flask_triangle.validator import Validator
 
 
 class Regexp(Validator):
@@ -14,8 +14,6 @@ class Regexp(Validator):
 
     ..note: This validator does not support string format.
     """
-
-    alter_schema = (False, False, True)
 
     def __init__(self, regexp):
         """
@@ -29,9 +27,11 @@ class Regexp(Validator):
         """
         self.regexp = regexp
 
-    def schema(self, **kwargs):
-        return Schema({u'pattern': self.regexp})
-
+    @property
     def attributes(self):
         res = self.regexp.replace(u'{', u'{{').replace(u'}', u'}}')
-        return Attributes({u'ng-pattern': u'/{}/'.format(res)})
+        return {u'ng-pattern': u'/{}/'.format(res)}
+
+    def alter_schema(self, schema, fqn):
+        if schema[u'type'] != 'object':
+            schema[u'pattern'] = self.regexp

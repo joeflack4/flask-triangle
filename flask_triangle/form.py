@@ -12,9 +12,9 @@
 
 from __future__ import absolute_import
 
-from .triangle import json_validate
+from .helpers import json_validate
 from .widget import Widget
-from .types import Schema
+from .schema import Schema
 
 
 class Form(object):
@@ -42,10 +42,7 @@ class Form(object):
 
         obj = super(Form, cls).__new__(cls)
         cls.register_widgets()
-
-        # Sort all the widgets by their declaration order
-        cls.__widgets = sorted(cls.__widgets,
-                               key = lambda(k): id(getattr(cls, k)))
+        cls.__widgets = sorted(cls.__widgets, key = lambda(k): k.index)
 
         return obj
 
@@ -61,9 +58,9 @@ class Form(object):
         if schema is not None:
             self.schema = Schema(schema)
         else:
-            self.schema = Schema({})
+            self.schema = Schema()
             for widget in self:
-                self.schema.update(widget.schema)
+                self.schema.merge(widget.schema)
 
         if root is not None:
             self.schema = self.schema.get('properties').get(root, self.schema)

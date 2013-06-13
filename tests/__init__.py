@@ -1,11 +1,12 @@
-from .types.schema import TestSchema
-from .widget.properties import TestWidgetProperties
-from .widget.rendering import TestRendering
-from .widget.constructor import TestFixedArgs
-from .widget.validation import TestDeclaration
+from .form import TestWidgetManagement, TestSchemaManagement
 
-from .validators.common import TestValidator
-from .validators.required import TestRequired
+from .helpers import TestHelperAngularAttribute, TestHelperJnijaAngularFilter
+
+from .widget import (TestWidgetConstructor, TestWidgetProperties,
+                     TestWidgetSchema, TestWidgetValidator)
+
+from .schema import TestSchema0, TestSchema1, TestSchema2, TestSchema3
 from .validators.patterns import TestRegexp
+from .validators.required import TestRequired
 
-from .form.inputs import TestWidgetManagement, TestSchemaManagement
+from .html import TestHtml

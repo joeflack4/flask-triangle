@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-from .triangle import Triangle, json_validate
+from .triangle import Triangle
 from .form import Form
 
 __all__ = ['Triangle', 'Form', 'json_validate']
