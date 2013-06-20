@@ -41,7 +41,8 @@ class TestWidgetManagement(object):
 
         widget_list = [widget.name for widget in self.myform]
         assert_equal(len(widget_list), 2)
-        assert_equal(['entry1', 'entry0'], widget_list)
+        assert_in('entry0', widget_list)
+        assert_in('entry1', widget_list)
 
 class TestSchemaManagement(object):
 
