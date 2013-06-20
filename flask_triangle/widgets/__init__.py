@@ -4,6 +4,7 @@
 
 
 from .text import TextInput
+from .select import SelectInput
 
 
-__all__ = ['TextInput']
+__all__ = ['TextInput', 'SelectInput']

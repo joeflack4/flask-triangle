@@ -5,6 +5,7 @@
 
 from .required import Required
 from .patterns import Regexp, PatternProperty
+from .multiple import Multiple
 
 
-__all__ = ['Required', 'Regexp', 'PatternProperty']
+__all__ = ['Required', 'Regexp', 'PatternProperty', 'Multiple']

@@ -33,8 +33,9 @@ class Regexp(Validator):
         return {u'ng-pattern': u'/{}/'.format(res)}
 
     def alter_schema(self, schema, fqn):
-        if schema[u'type'] != 'object':
+        if schema[u'type'] != u'object':
             schema[u'pattern'] = self.regexp
+
 
 class PatternProperty(Validator):
     """
