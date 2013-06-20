@@ -28,7 +28,7 @@ class Multiple(Validator):
         :arg max: a number. The maximum number of selected elements in the
         list to succeed validation. If set to None, there is no maximum.
         """
-        self.attributes = {u'required': None}
+        self.attributes = {u'multiple': None}
         self.min_items = min_items
         self.max_items = max_items
 
