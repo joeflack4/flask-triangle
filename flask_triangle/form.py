@@ -12,39 +12,52 @@
 
 from __future__ import absolute_import
 
+import six
+import copy
+
 from .helpers import json_validate
 from .widget import Widget
 from .schema import Schema
 
 
-class Form(object):
+class FormBase(type):
+    """Metaclass for a Form object"""
+
+    def __new__(mcs, name, bases, attrs):
+
+        super_new = super(FormBase, mcs).__new__
+
+        if name == 'NewBase' and attrs == {}:
+            return super_new(mcs, name, bases, attrs)
+        parents = [b for b in bases if isinstance(b, FormBase) and
+                   not (b.__name__ == 'NewBase' and b.__mro__ == (b, object))]
+        if not parents:
+            return super_new(mcs, name, bases, attrs)
+
+        module = attrs.pop('__module__')
+        new_class = super_new(mcs, name, bases, {'__module__': module})
+
+        # widget class attributes are moved in fields
+        new_class._Form__widgets = list() if new_class._Form__widgets is None\
+                                   else copy.deepcopy(new_class._Form__widgets)
+
+        for obj_name, obj in attrs.items():
+            if isinstance(obj, Widget):
+                if obj.name is None:
+                    obj.name = obj_name
+                new_class._Form__widgets.append(obj)
+            setattr(new_class, obj_name, obj)
+
+        new_class._Form__widgets.sort(key=lambda k: k.index)
+        return new_class
+
+
+class Form(six.with_metaclass(FormBase)):
     """
     The Form acts as a container for multiple Widgets.
     """
 
-    __widgets = list()
-
-    @classmethod
-    def register_widgets(cls):
-
-        for k, v in cls.__dict__.items():
-            if isinstance(v, Widget):
-                v.name = k
-                if k not in cls.__widgets:
-                    cls.__widgets.append(k)
-
-        for parent in cls.__bases__:
-            if parent != Form:
-                parent.register_widgets()
-
-
-    def __new__(cls, *args, **kwargs):
-
-        obj = super(Form, cls).__new__(cls)
-        cls.register_widgets()
-        cls.__widgets = sorted(cls.__widgets, key = lambda(k): k.index)
-
-        return obj
+    __widgets = None
 
     def __init__(self, name, schema=None, root=None):
         """
@@ -76,4 +89,4 @@ class Form(object):
         return json_validate(self.schema)
 
     def __iter__(self):
-        return (getattr(self, widget) for widget in self.__widgets)
+        return (widget for widget in self.__widgets)
