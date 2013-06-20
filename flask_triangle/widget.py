@@ -68,7 +68,8 @@ class Widget(object):
         # applying validator side-effects
         self.attributes = {u'name': name, u'ng-model': bind}
         self._schema = Schema().apply_func(self.init_schema)
-        for validator in validators or []:
+        self.validators = validators or []
+        for validator in self.validators:
             self._schema.apply_func(validator.alter_schema)
             self.attributes.update(validator.attributes)
 
@@ -133,6 +134,11 @@ class Widget(object):
 
         return True
 
+    def render(self):
+        if self.name is None:
+            raise ValueError(u'The required `name` property is not set.')
+        return self.html_template.format(attributes=self.render_attributes())
+
     def __call__(self, **kwargs):
         """
         Generate the HTML code of the current widget. Keyword arguments are
@@ -142,7 +148,4 @@ class Widget(object):
             >>> a(name='demo')
             u'<input name="demo" ng-model="hello.world"/>
         """
-        if self.name is None:
-            raise ValueError(u'The required `name` property is not set.')
-        res = self.html_template.format(attributes=self.render_attributes())
-        return HTMLString(res.format(**kwargs))
+        return HTMLString(self.render().format(**kwargs))
