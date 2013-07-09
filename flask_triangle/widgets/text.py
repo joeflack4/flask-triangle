@@ -16,3 +16,8 @@ class TextInput(Widget):
         super(TextInput, self).__init__(bind, name, validators, label,
                                         description, index, **kwargs)
         self.attributes[u'type'] = u'text'
+
+class TextArea(Widget):
+    """A text input based on the HTML textarea widget."""
+
+    html_template = u'<textarea {attributes}></textarea>'
