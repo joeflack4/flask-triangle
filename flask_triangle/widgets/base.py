@@ -85,8 +85,10 @@ class Widget(object):
     data.
     """
 
+    instance_counter = 0
+
     def __init__(self, bind, name=None, validators=None, label=None,
-                 description=None, index=0, html_attributes=None):
+                 description=None, html_attributes=None):
 
         """
         :arg bind: An ``angular expression``. Two-way Angular's data binding
@@ -119,7 +121,9 @@ class Widget(object):
 
         self._label = label
         self.description = description
-        self.index = index
+
+        self.instance_counter = Widget.instance_counter
+        Widget.instance_counter += 1
 
         # applying validator side-effects
         self.attributes = HtmlAttr({'name': name, 'ng-model': bind})
