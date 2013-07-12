@@ -37,17 +37,19 @@ class FormBase(type):
         new_class = super_new(mcs, name, bases, {'__module__': module})
 
         # widget class attributes are moved in fields
-        new_class._Form__widgets = list() if new_class._Form__widgets is None\
-                                   else copy.deepcopy(new_class._Form__widgets)
+        new_class._Form__widgets = copy.deepcopy(new_class._Form__widgets)
 
+        new_widgets = list()
         for obj_name, obj in attrs.items():
             if isinstance(obj, Widget):
                 if obj.name is None:
                     obj.name = obj_name
-                new_class._Form__widgets.append(obj)
+                if obj_name not in new_class._Form__widgets:
+                    new_widgets.append(obj_name)
             setattr(new_class, obj_name, obj)
+        new_widgets.sort(key=lambda k: getattr(new_class, k).instance_counter)
+        new_class._Form__widgets += new_widgets
 
-        new_class._Form__widgets.sort(key=lambda k: k.index)
         return new_class
 
 
@@ -56,7 +58,7 @@ class Form(six.with_metaclass(FormBase)):
     The Form acts as a container for multiple Widgets.
     """
 
-    __widgets = None
+    __widgets = list()
 
     def __init__(self, name, schema=None, root=None):
         """
@@ -88,4 +90,4 @@ class Form(six.with_metaclass(FormBase)):
         return json_validate(self.schema)
 
     def __iter__(self):
-        return (widget for widget in self.__widgets)
+        return (getattr(self, obj_name) for obj_name in self.__widgets)

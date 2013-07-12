@@ -23,7 +23,7 @@ import mock
 
 
 Widget.json_type = 'test'
-Widget.html_template = '<input {attributes}/>'
+Widget.html_template = '<test {attributes}/>'
 
 
 class TestWidgetInit(object):

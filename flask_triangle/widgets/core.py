@@ -27,7 +27,7 @@ class Input(Widget):
     input_type = None
 
     def __init__(self, bind, name=None, validators=None, label=None,
-                 description=None, index=0, html_attributes=None):
+                 description=None, html_attributes=None):
 
         if self.input_type is not None:
             attributes = {'type': self.input_type}
@@ -37,7 +37,7 @@ class Input(Widget):
             attributes.update(html_attributes)
 
         super(Input, self).__init__(bind, name, validators, label,
-                                    description, index, html_attributes)
+                                    description, html_attributes)
 
 
 class TextInput(Input):
