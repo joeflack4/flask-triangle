@@ -11,19 +11,19 @@
 from __future__ import absolute_import
 from nose.tools import assert_true, assert_equal
 
-from flask_triangle.html import HTMLString
+from flask_triangle.helpers import HTMLString
 
 
 class TestHtml(object):
 
     def setup(self):
-        
+
         self.html = HTMLString(u'hello')
 
     def test_0(self):
         """An HTMLString object is an unicode subtype"""
         assert_true(isinstance(self.html, unicode))
-        
+
     def test_1(self):
         """An HTMLString object is __html__."""
         assert_true(hasattr(self.html, '__html__'))

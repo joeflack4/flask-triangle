@@ -15,10 +15,9 @@ from __future__ import absolute_import
 import six
 import copy
 
-from .helpers import json_validate
-from .widget import Widget
+from .widgets.base import Widget
 from .schema import Schema
-
+from .flask import json_validate
 
 class FormBase(type):
     """Metaclass for a Form object"""

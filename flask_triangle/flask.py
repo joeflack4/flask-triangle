@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 """
-    flask_triangle.helpers
-    ----------------------
+    flask_triangle.flask
+    --------------------
 
-    Useful functions. Some of them are directly aimed to be available in Flask.
+    Addons provided to flask
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -11,34 +11,12 @@
 
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
-import re
-from flask import request, abort
 from jsonschema import validate, SchemaError, ValidationError
+from flask import request, abort
 
 
-def angular_attribute(name):
-    """
-    Translate an Angular's attribute name from camel case notation to dashed
-    notation. Other name will not be modified::
-
-    :arg name: An ``unicode`` string starting by 'ng[A-Z].*'.
-
-        >>> angular_attribute(u'ngPattern')
-        u'ng-pattern'
-        >>> angular_attribute(u'other')
-        u'other'
-    """
-    if not re.match(r'^ng[A-Z].*$', name):
-        return name
-    return u'-'.join(c for c in re.split(r'(^ng)|([A-Z][^A-Z]+)', name) if c).lower()
-
-
-def angular_filter(string):
-    """A Jinja2 filter to generate double curly-bracketed string."""
-    return u'{{{{{}}}}}'.format(string)
-
-#TODO: To test
 def json_validate(schema):
     """
     A decorator to automatically handle JSON validation sent as payload.
@@ -68,3 +46,8 @@ def json_validate(schema):
         return wrapfunc
 
     return decorator
+
+
+def angular_filter(string):
+    """A Jinja2 filter to generate double curly-bracketed string."""
+    return u'{{{{{}}}}}'.format(string)

@@ -5,7 +5,7 @@ flask_triangle.
 
 
 from __future__ import absolute_import
-from flask_triangle.validator import Validator
+from .base import Validator
 
 
 class Required(Validator):

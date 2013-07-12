@@ -62,7 +62,7 @@ class TestHelperAngularAttribute(object):
 
 
 class TestHelperJnijaAngularFilter(object):
-    
+
     def test_filter(self):
         """Test the jinja2 filter"""
         assert_equal(angular_filter(u'test'), u'{{test}}')

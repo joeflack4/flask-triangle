@@ -4,23 +4,24 @@ Test the handling of inputs in a form
 """
 
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from flask_triangle.widgets import TextInput
 from flask_triangle import Form
-
 from nose.tools import assert_equal, assert_in
 
 
 class MyForm(Form):
 
-    entry1 = TextInput(u'entry1')
-    entry0 = TextInput(u'entry0')
+    entry1 = TextInput('entry1')
+    entry0 = TextInput('entry0')
 
 
 class TestWidgetManagement(object):
 
     def setup(self):
 
-        self.myform = MyForm(u'my_form')
+        self.myform = MyForm('my_form')
 
     def test_direct_access(self):
         """A widget is accessible as any other field"""
@@ -31,7 +32,7 @@ class TestWidgetManagement(object):
         The name of a widget is automatically set to the property name held
         it in the Form object.
         """
-        assert_equal(self.myform.entry0.name, u'entry0')
+        assert_equal(self.myform.entry0.name, 'entry0')
 
     def test_iterate_init(self):
         """
@@ -48,8 +49,8 @@ class TestSchemaManagement(object):
 
     def setup(self):
 
-        self.auto = MyForm(u'my_form')
-        self.manual = MyForm(u'my_form', {})
+        self.auto = MyForm('my_form')
+        self.manual = MyForm('my_form', {})
 
     def test_schema_auto(self):
         """
@@ -57,8 +58,8 @@ class TestSchemaManagement(object):
         """
         schema = self.auto.schema
 
-        assert_in(u'entry1', schema['properties'])
-        assert_in(u'entry0', schema['properties'])
+        assert_in('entry1', schema['properties'])
+        assert_in('entry0', schema['properties'])
 
     def test_schema_manual(self):
         """

@@ -8,6 +8,7 @@
 """
 
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 from flask_triangle.schema import Schema
 
@@ -30,10 +31,10 @@ class TestSchema0(object):
 
     def test_init1(self):
         """A Schema can be initialized with an existing dict"""
-        schema = Schema({u'test': u'ok'})
+        schema = Schema({'test': 'ok'})
         assert_equal(len(schema), 1)
-        assert_in(u'test', schema)
-        assert_equal(schema[u'test'], u'ok')
+        assert_in('test', schema)
+        assert_equal(schema['test'], 'ok')
 
 
 class TestSchema1(object):
@@ -46,15 +47,15 @@ class TestSchema1(object):
 
     def test_apply_func0(self):
         """the applied func is called on the root and each properties"""
-        schema = Schema({u'type': u'object',
-                          u'properties': {u'first': Schema({u'type': u'string'}),
-                                          u'last': Schema({u'type': u'string'})}})
+        schema = Schema({'type': 'object',
+                          'properties': {'first': Schema({'type': 'string'}),
+                                          'last': Schema({'type': 'string'})}})
 
         schema.apply_func(self.func_nobreak)
 
-        expected = [mock.call(schema, u''),
-                    mock.call(schema[u'properties'][u'last'], u'last'),
-                    mock.call(schema[u'properties'][u'first'], u'first')]
+        expected = [mock.call(schema, ''),
+                    mock.call(schema['properties']['last'], 'last'),
+                    mock.call(schema['properties']['first'], 'first')]
         assert_equal(self.func_nobreak.call_args_list, expected)
 
     def test_apply_func1(self):
@@ -62,43 +63,43 @@ class TestSchema1(object):
         the applied func is called on the root only if the function breaks the
         process by returning a non-false value.
         """
-        schema = Schema({u'type': u'object',
-                          u'properties': {u'first': Schema({u'type': u'string'}),
-                                          u'last': Schema({u'type': u'string'})}})
+        schema = Schema({'type': 'object',
+                          'properties': {'first': Schema({'type': 'string'}),
+                                          'last': Schema({'type': 'string'})}})
 
         schema.apply_func(self.func_break)
 
-        expected = [mock.call(schema, u'')]
+        expected = [mock.call(schema, '')]
         assert_equal(self.func_break.call_args_list, expected)
 
     def test_apply_func2(self):
         """
         the applied func is called on nested properties.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'parent': Schema({u'type': u'object',
-                                                            u'properties': {u'child': Schema({u'type': u'string'})}})}})
+        schema = Schema({'type': 'object',
+                         'properties': {'parent': Schema({'type': 'object',
+                                                            'properties': {'child': Schema({'type': 'string'})}})}})
 
         schema.apply_func(self.func_nobreak)
 
-        expected = [mock.call(schema, u''),
-                    mock.call(schema[u'properties'][u'parent'], u'parent'),
-                    mock.call(schema[u'properties'][u'parent'][u'properties'][u'child'], u'parent.child')]
+        expected = [mock.call(schema, ''),
+                    mock.call(schema['properties']['parent'], 'parent'),
+                    mock.call(schema['properties']['parent']['properties']['child'], 'parent.child')]
         assert_equal(self.func_nobreak.call_args_list, expected)
 
     def test_apply_func3(self):
         """
         the applied func is called for pattern proterties but use a '*' token.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'named': Schema({u'type': u'string'})},
-                         u'patternProperties': {u'^(/[^/]+)+$': Schema({u'type': u'string'})}})
+        schema = Schema({'type': 'object',
+                         'properties': {'named': Schema({'type': 'string'})},
+                         'patternProperties': {'^(/[^/]+)+$': Schema({'type': 'string'})}})
 
         schema.apply_func(self.func_nobreak)
 
-        expected = [mock.call(schema, u''),
-                    mock.call(schema[u'properties'][u'named'], u'named'),
-                    mock.call(schema[u'patternProperties'][u'^(/[^/]+)+$'], u'*')]
+        expected = [mock.call(schema, ''),
+                    mock.call(schema['properties']['named'], 'named'),
+                    mock.call(schema['patternProperties']['^(/[^/]+)+$'], '*')]
         assert_equal(self.func_nobreak.call_args_list, expected)
 
 
@@ -110,68 +111,68 @@ class TestSchema2(object):
         a pattenProperty using the value of 'asPatternProperty' as pattern. 
         This property is removed from the patternProperty
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'normal': Schema({u'type': u'string'}),
-                                         u'pattern': Schema({u'type': u'string',
-                                                             u'asPatternProperty': u'^(/[^/]+)+$'})}})
+        schema = Schema({'type': 'object',
+                         'properties': {'normal': Schema({'type': 'string'}),
+                                         'pattern': Schema({'type': 'string',
+                                                             'asPatternProperty': '^(/[^/]+)+$'})}})
 
         schema.compile()
-        assert_not_in(u'pattern', schema[u'properties'])
-        assert_not_in(u'pattern', schema[u'patternProperties'])
-        assert_in(u'^(/[^/]+)+$', schema[u'patternProperties'])
-        assert_not_in(u'asPatternProperty', schema[u'patternProperties'][u'^(/[^/]+)+$'])
+        assert_not_in('pattern', schema['properties'])
+        assert_not_in('pattern', schema['patternProperties'])
+        assert_in('^(/[^/]+)+$', schema['patternProperties'])
+        assert_not_in('asPatternProperty', schema['patternProperties']['^(/[^/]+)+$'])
 
     def test_1(self):
         """
         If the property was in the required list before being moved to
         patternProperties, its name is removed.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'normal': Schema({u'type': u'string'}),
-                                         u'pattern': Schema({u'type': u'string',
-                                                             u'asPatternProperty': u'^(/[^/]+)+$'})},
-                         u'required': [u'pattern', u'normal']})
+        schema = Schema({'type': 'object',
+                         'properties': {'normal': Schema({'type': 'string'}),
+                                         'pattern': Schema({'type': 'string',
+                                                             'asPatternProperty': '^(/[^/]+)+$'})},
+                         'required': ['pattern', 'normal']})
 
         schema.compile()
-        assert_not_in(u'pattern', schema[u'required'])
+        assert_not_in('pattern', schema['required'])
 
     def test_2(self):
         """
         If the required list is empty after the removal of value, the required
         field is also removed.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'normal': Schema({u'type': u'string'}),
-                                         u'pattern': Schema({u'type': u'string',
-                                                             u'asPatternProperty': u'^(/[^/]+)+$'})},
-                         u'required': [u'pattern']})
+        schema = Schema({'type': 'object',
+                         'properties': {'normal': Schema({'type': 'string'}),
+                                         'pattern': Schema({'type': 'string',
+                                                             'asPatternProperty': '^(/[^/]+)+$'})},
+                         'required': ['pattern']})
 
         schema.compile()
-        assert_not_in(u'required', schema)
+        assert_not_in('required', schema)
 
     def test_3(self):
         """
         If there is no more properties in the obhect, this field is removed.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'pattern': Schema({u'type': u'string',
-                                                             u'asPatternProperty': u'^(/[^/]+)+$'})}})
+        schema = Schema({'type': 'object',
+                         'properties': {'pattern': Schema({'type': 'string',
+                                                             'asPatternProperty': '^(/[^/]+)+$'})}})
 
         schema.compile()
-        assert_not_in(u'properties', schema)
+        assert_not_in('properties', schema)
 
     def test_4(self):
         """
         If there is already patterProperties the list is appended.
         """
-        schema = Schema({u'type': u'object',
-                         u'properties': {u'pattern': Schema({u'type': u'string',
-                                                             u'asPatternProperty': u'^(/[^/]+)+$'})},
-                         u'patternProperties': {u'^[A-Z]*$': Schema({u'type': u'string'})}})
+        schema = Schema({'type': 'object',
+                         'properties': {'pattern': Schema({'type': 'string',
+                                                             'asPatternProperty': '^(/[^/]+)+$'})},
+                         'patternProperties': {'^[A-Z]*$': Schema({'type': 'string'})}})
 
-        assert_equal(len(schema[u'patternProperties']), 1)
+        assert_equal(len(schema['patternProperties']), 1)
         schema.compile()
-        assert_equal(len(schema[u'patternProperties']), 2)
+        assert_equal(len(schema['patternProperties']), 2)
 
 
 class TestSchema3(object):

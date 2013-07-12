@@ -3,8 +3,7 @@
 """
 
 
-from .text import TextInput
-from .select import SelectInput
+from .core import TextInput
 
 
-__all__ = ['TextInput', 'SelectInput']
+__all__ = ['TextInput'] #, 'SelectInput']

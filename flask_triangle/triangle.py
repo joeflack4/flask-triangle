@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+#-*- encoding: utf-8 -*-
 """
     flask_triangle.triangle
     -----------------------
@@ -9,11 +9,15 @@
 
 
 from __future__ import absolute_import
-from .helpers import angular_filter
+from .flask import angular_filter
 
 
 class Triangle(object):
     """
+    Central controller class that can be used to configure how Flask-Triangle
+    behaves. Each application that wants to use Flask-Triangle has to create,
+    or run :meth:`init_app` on, an instance of this class after the
+    configuration was initialized.
     """
 
     def __init__(self, app=None):
@@ -21,4 +25,10 @@ class Triangle(object):
             self.init_app(app)
 
     def init_app(self, app):
+        """
+        Set up this instance for use with *app*, if no app was passed to the
+        constructor.
+        """
+
+        # register the angular filter in jinja
         app.jinja_env.filters[u'angular'] = angular_filter

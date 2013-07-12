@@ -9,8 +9,8 @@
 
 
 from __future__ import absolute_import
-from flask_triangle.validator import Validator
 from flask_triangle.schema import Schema
+from .base import Validator
 
 
 class Multiple(Validator):
