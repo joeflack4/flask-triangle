@@ -15,7 +15,7 @@ class Regexp(Validator):
     ..note: This validator does not support string format.
     """
 
-    def __init__(self, regexp):
+    def __init__(self, regexp, client=True):
         """
         :arg regexp: A ``regular expression``. The result must match the
         regular expression to be valid.
@@ -25,10 +25,13 @@ class Regexp(Validator):
         .. _`Angular's input API`:
             http://docs.angularjs.org/api/ng.directive:input
         """
+        self.client = client
         self.regexp = regexp
 
     @property
     def attributes(self):
+        if not self.client:
+            return dict()
         res = self.regexp.replace(u'{', u'{{').replace(u'}', u'}}')
         return {u'ng-pattern': u'/{}/'.format(res)}
 

@@ -46,7 +46,32 @@ class TextInput(Input):
     json_type = 'text'
 
 
+class PasswordInput(Input):
+    """A password text input."""
+    input_type = 'password'
+    json_type = 'text'
+
+
+class EmailInput(Input):
+    """An email text input."""
+    input_type = 'email'
+    json_type = 'text'
+
+    def __init__(self, bind, name=None, validators=None, label=None,
+                 description=None, html_attributes=None):
+
+        val = Regexp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-.])*$',
+                     client=False)
+
+        if validators is not None:
+            validators = [val] + validators
+        else:
+            validators = [val]
+
+        super(EmailInput, self).__init__(bind, name, validators, label,
+                                         description, html_attributes)
+
 class TextArea(Widget):
     """A text input based on the HTML textarea widget."""
     html_template = '<textarea {attributes}></textarea>'
-    json_typ = 'text'
+    json_type = 'text'
