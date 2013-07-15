@@ -12,6 +12,7 @@ from __future__ import absolute_import
 
 from .default import TestFormCreation, TestFormWithWidgets
 from .inheritance import TestInheritance0, TestInheritance1, TestInheritance2
+from .render import TestRender
 
 __all__ = ['TestFormCreation', 'TestFormWithWidgets', 'TestInheritance0',
-           'TestInheritance1', 'TestInheritance2']
+           'TestInheritance1', 'TestInheritance2', 'TestRender']

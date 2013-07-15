@@ -14,10 +14,13 @@ from __future__ import absolute_import
 
 import six
 import copy
+import flask
 
 from .widgets.base import Widget
 from .schema import Schema
 from .flask import json_validate
+from .helpers import HTMLString, form_template
+
 
 class FormBase(type):
     """Metaclass for a Form object"""
@@ -60,7 +63,7 @@ class Form(six.with_metaclass(FormBase)):
 
     __widgets = list()
 
-    def __init__(self, name, schema=None, root=None):
+    def __init__(self, name, schema=None, root=None, template=None):
         """
         :arg schema: A ``dict``. A custom schema to describe how-to validate
         resulting JSON from this form.
@@ -80,6 +83,10 @@ class Form(six.with_metaclass(FormBase)):
         if root is not None:
             self.schema = self.schema.get('properties').get(root, self.schema)
 
+        self.template = form_template
+        if template is not None:
+            self.template = template
+
         self.name = name
 
     @property
@@ -91,3 +98,8 @@ class Form(six.with_metaclass(FormBase)):
 
     def __iter__(self):
         return (getattr(self, obj_name) for obj_name in self.__widgets)
+
+    def __call__(self, **kwargs):
+        return HTMLString(flask.render_template_string(self.template,
+                                                       form=self,
+                                                       kwargs=kwargs))

@@ -15,6 +15,6 @@ from __future__ import unicode_literals
 
 from .python3 import UnicodeMixin
 from .html import HTMLString
+from .templates import form_template
 
-
-__all__ = ['UnicodeMixin', 'HTMLString']
+__all__ = ['UnicodeMixin', 'HTMLString', 'form_template']

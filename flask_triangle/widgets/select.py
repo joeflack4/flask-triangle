@@ -39,12 +39,8 @@ class SelectInput(Widget):
             self.attributes['ng-options'] = choices
 
     def render_options(self):
-        """
-
-        """
         res = ''
         if self.choices is not None:
-
             choices = sorted([option + (None, None)[0:3-len(option)]
                               for option in self.choices], key=lambda x: x[2])
 
@@ -62,12 +58,10 @@ class SelectInput(Widget):
                     res += '<option>{}</option>'.format(title)
             if current_group is not None:
                 res += '</optgroup>'
-
         return res
-
 
     def render(self):
         if self.name is None:
             raise ValueError('The required `name` property is not set.')
-        return self.html_template.format(attributes=self.render_attributes(),
+        return self.html_template.format(attributes=unicode(self.attributes),
                                          options=self.render_options())
