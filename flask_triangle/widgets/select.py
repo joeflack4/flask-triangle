@@ -19,7 +19,7 @@ class SelectInput(Widget):
     as_json = u'string'
 
     def __init__(self, bind, name=None, validators=None, label=None,
-                 description=None, index=0, choices=None, **kwargs):
+                 description=None, html_attributes=None, choices=None):
         """
         :arg choices: a list of tuple or a string. The string is an angular
         generator expression. Otherwise, each tuple can be from one to three
@@ -29,7 +29,7 @@ class SelectInput(Widget):
         """
 
         super(SelectInput, self).__init__(bind, name, validators, label,
-                                        description, index, **kwargs)
+                                          description, html_attributes)
 
         self.choices = None
         if isinstance(choices, list):
