@@ -9,14 +9,15 @@
 
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from .base import Widget
 
 
 class SelectInput(Widget):
     """A Select input."""
 
-    html_template = u'<select {attributes}>{options}</select>'
-    as_json = u'string'
+    html_template = '<select {attributes}>{options}</select>'
+    json_type = 'string'
 
     def __init__(self, bind, name=None, validators=None, label=None,
                  description=None, html_attributes=None, choices=None):
@@ -35,13 +36,13 @@ class SelectInput(Widget):
         if isinstance(choices, list):
             self.choices = choices
         else:
-            self.attributes[u'ng-options'] = choices
+            self.attributes['ng-options'] = choices
 
     def render_options(self):
         """
 
         """
-        res = u''
+        res = ''
         if self.choices is not None:
 
             choices = sorted([option + (None, None)[0:3-len(option)]
@@ -51,22 +52,22 @@ class SelectInput(Widget):
             for title, value, group in choices:
                 if group != current_group:
                     if current_group is not None:
-                        res += u'</optgroup>'
-                    res += u'<optgroup label="{}">'.format(group)
+                        res += '</optgroup>'
+                    res += '<optgroup label="{}">'.format(group)
                     current_group = group
 
                 if value is not None:
-                    res += u'<option value="{}">{}</option>'.format(value, title)
+                    res += '<option value="{}">{}</option>'.format(value, title)
                 else:
-                    res += u'<option>{}</option>'.format(title)
+                    res += '<option>{}</option>'.format(title)
             if current_group is not None:
-                res += u'</optgroup>'
+                res += '</optgroup>'
 
         return res
 
 
     def render(self):
         if self.name is None:
-            raise ValueError(u'The required `name` property is not set.')
+            raise ValueError('The required `name` property is not set.')
         return self.html_template.format(attributes=self.render_attributes(),
                                          options=self.render_options())
