@@ -15,7 +15,7 @@ from __future__ import unicode_literals
 
 from jsonschema import validate, SchemaError, ValidationError
 from flask import request, abort
-
+from jinja2 import evalcontextfilter, Undefined, is_undefined
 
 def json_validate(schema):
     """
@@ -48,6 +48,24 @@ def json_validate(schema):
     return decorator
 
 
-def angular_filter(string):
+class TriangleUndefined(Undefined):
+    """
+    A custom undefined class returning undefined objects when attributes are
+    accessed.
+    """
+
+    def __getattr__(self, name):
+        if name[:2] == '__':
+            raise AttributeError(name)
+        return TriangleUndefined(name='{}.{}'.format(self._undefined_name,
+                                                     name))
+
+
+def angular_filter(value):
     """A Jinja2 filter to generate double curly-bracketed string."""
-    return u'{{{{{}}}}}'.format(string)
+
+    if is_undefined(value):
+        return '{{{{{}}}}}'.format(value._undefined_name)
+    if type(value) is bool:
+        value = unicode(value).lower()
+    return '{{{{{}}}}}'.format(value)

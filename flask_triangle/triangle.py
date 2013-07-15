@@ -9,7 +9,7 @@
 
 
 from __future__ import absolute_import
-from .flask import angular_filter
+from .flask import angular_filter, TriangleUndefined
 
 
 class Triangle(object):
@@ -30,5 +30,6 @@ class Triangle(object):
         constructor.
         """
 
-        # register the angular filter in jinja
+        # set the Jinja2 environment
+        app.jinja_env.undefined = TriangleUndefined
         app.jinja_env.filters[u'angular'] = angular_filter

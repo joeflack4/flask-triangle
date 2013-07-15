@@ -8,5 +8,6 @@ from .widgets import *
 from .helpers import *
 from .validators import *
 from .forms import *
+from .flask import *
 
 from .schema import TestSchema0, TestSchema1, TestSchema2, TestSchema3
