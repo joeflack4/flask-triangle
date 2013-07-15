@@ -14,6 +14,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from .base import Widget
+from flask_triangle.validators import Regexp
 
 
 class Input(Widget):
@@ -29,15 +30,11 @@ class Input(Widget):
     def __init__(self, bind, name=None, validators=None, label=None,
                  description=None, html_attributes=None):
 
-        if self.input_type is not None:
-            attributes = {'type': self.input_type}
-        else:
-            attributes = {}
-        if html_attributes is not None:
-            attributes.update(html_attributes)
-
         super(Input, self).__init__(bind, name, validators, label,
                                     description, html_attributes)
+
+        if self.input_type is not None:
+            self.attributes.update({'type': self.input_type})
 
 
 class TextInput(Input):
