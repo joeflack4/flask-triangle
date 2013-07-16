@@ -68,6 +68,53 @@ class EmailInput(Input):
         super(EmailInput, self).__init__(bind, name, validators, label,
                                          description, html_attributes)
 
+
+class CheckboxInput(Input):
+    """A simple checkbox."""
+    input_type = 'checkbox'
+    json_type = 'boolean'
+
+
+class RadioInput(Input):
+    """A radio button."""
+    input_type = 'radio'
+    json_type = 'text'
+    html_template = '<input {attributes}>{value}</input>'
+
+    def __init__(self, bind, name=None, validators=None, label=None,
+                 description=None, html_attributes=None, value=None):
+        super(RadioInput, self).__init__(bind, name, validators, label,
+                                         description, html_attributes)
+        if value is not None:
+            self.attributes['value'], self.value = value
+        else:
+            self.value = ''
+
+    def render(self):
+        if self.name is None:
+            raise ValueError('The required `name` property is not set.')
+        return self.html_template.format(attributes=unicode(self.attributes),
+                                         value=self.value)
+
+
+class RadioGroupInput(Input):
+    """A list of radio buttons."""
+    def __init__(self, bind, values, name=None, validators=None, label=None,
+                 description=None, html_attributes=None):
+
+        # for compatibility purposes
+        super(RadioGroupInput, self).__init__(bind, name, validators, label,
+                                              description, html_attributes)
+
+        self.radios = list()
+        for k, v in values.iteritems():
+            self.radios.append(RadioInput(bind, name, validators, label,
+                                          description, html_attributes, (k,v)))
+
+    def render(self):
+        return '<br/>'.join(radio.render() for radio in self.radios)
+
+
 class TextArea(Widget):
     """A text input based on the HTML textarea widget."""
     html_template = '<textarea {attributes}></textarea>'

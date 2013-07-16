@@ -11,9 +11,12 @@
 from __future__ import absolute_import
 
 from .attributes import TestAttributes0, TestAttributes1
-from .widget import TestWidgetValidator, TestWidgetSchema, TestWidgetProperties, TestWidgetInit
-from .core import TestTextInput, TestPasswordInput, TestEmailInput
+from .widget import TestWidgetValidator, TestWidgetSchema,\
+                    TestWidgetProperties, TestWidgetInit
+from .core import TestTextInput, TestPasswordInput, TestEmailInput,\
+                  TestCheckboxInput, TestRadioInput, TestRadioGroupInput
 
 __all__ = ['TestAttributes0', 'TestAttributes1', 'TestWidgetValidator',
            'TestWidgetSchema', 'TestWidgetProperties', 'TestWidgetInit',
-           'TestTextInput', 'TestPasswordInput', 'TestEmailInput']
+           'TestTextInput', 'TestPasswordInput', 'TestEmailInput',
+           'TestCheckboxInput', 'TestRadioInput', 'TestRadioGroupInput']
