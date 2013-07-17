@@ -10,7 +10,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .flask import angular_filter, TriangleUndefined
+from .flask import angular_filter, widget_test, TriangleUndefined
 
 
 class Triangle(object):
@@ -34,3 +34,4 @@ class Triangle(object):
         # set the Jinja2 environment
         app.jinja_env.undefined = TriangleUndefined
         app.jinja_env.filters['angular'] = angular_filter
+        app.jinja_env.tests['widget'] = widget_test

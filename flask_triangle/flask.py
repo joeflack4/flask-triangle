@@ -16,6 +16,7 @@ from __future__ import unicode_literals
 from jsonschema import validate, SchemaError, ValidationError
 from flask import request, abort
 from jinja2 import evalcontextfilter, Undefined, is_undefined
+from .widgets.base import Widget
 
 def json_validate(schema):
     """
@@ -69,3 +70,16 @@ def angular_filter(value):
     if type(value) is bool:
         value = unicode(value).lower()
     return '{{{{{}}}}}'.format(value)
+
+
+def widget_test(obj, instance=Widget.__name__):
+    """A Jinja2 test to verify the type of a widget."""
+
+    if not isinstance(obj, Widget):
+        return False
+
+    cls = [obj.__class__]
+    while Widget not in cls:
+        cls += list(cls[-1].__bases__)
+
+    return instance in [i.__name__ for i in cls]

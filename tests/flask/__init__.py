@@ -10,6 +10,6 @@
 
 from __future__ import absolute_import
 from .init import TestInit
-from .filter import TestFilter
+from .template import TestJinjaFilter, TestJinjaTest
 
-__all__ = ['TestInit', 'TestFilter']
+__all__ = ['TestInit', 'TestJinjaFilter', 'TestJinjaTest']
