@@ -11,9 +11,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from nose.tools import assert_true, assert_equal, assert_false
-
+import flask
+from flask_triangle import Triangle
 from flask_triangle.widgets.base import HtmlAttr
+from nose.tools import assert_true, assert_equal, assert_false
 
 
 class TestAttributes0(object):
@@ -75,3 +76,28 @@ class TestAttributes1(object):
         self.test['camel-case'] = 'only-one'
         assert_false('"only-one"' in unicode(self.test) and
                      '"true"' in unicode(self.test))
+
+t = flask.render_template_string
+class TestAttributesAngular(object):
+    """
+    Double bracketted attribute.
+    """
+
+    def setup(self):
+        self.app = flask.Flask(__name__)
+
+    def test_simple(self):
+        test = HtmlAttr(attr='value|angular')
+        #attributes are formated
+        with self.app.test_request_context():
+            assert_equal(t('{{a}}', a=unicode(test).format()),
+                         'attr="{{value}}"')
+
+    def test_complex(self):
+        test = HtmlAttr(attr='''value|date: 'fullDate'|angular''')
+        #attributes are formated
+        with self.app.test_request_context():
+            assert_equal(t('{{a}}', a=unicode(test).format()),
+                         '''attr="{{value|date: 'fullDate'}}"''')
+
+

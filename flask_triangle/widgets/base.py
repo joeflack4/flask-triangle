@@ -47,9 +47,16 @@ class HtmlAttr(dict, UnicodeMixin):
         A value is converted to its string representation. For compatibility
         purpose with Javascript, `True` and `False` are in lower case.
         """
+        string = '"{}"'
         if type(value) is bool:
-            return '"{}"'.format(unicode(value).lower())
-        return '"{}"'.format(unicode(value))
+            return string.format(unicode(value).lower())
+
+        value = unicode(value)
+        if value.endswith('|angular'):
+            value = value[:-8]
+            string = '"{{{{{{{{{}}}}}}}}}"'
+
+        return string.format(value)
 
     @staticmethod
     def _to_attr(key, value):
