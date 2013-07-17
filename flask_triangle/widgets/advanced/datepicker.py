@@ -25,13 +25,10 @@ from ..base import Widget, HtmlAttr
 class Datepicker(Widget):
 
     html_template = '''
-    <div class="input-append">
+    <div class="btn-group">
       <input {attributes}>
-      <div class="btn-group">
-        <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-calendar"></i></button>
-        <div class="dropdown-menu persistent-dropdown">
-          <datepicker {datepicker_attributes}></datepicker>
-        </div>
+      <div class="dropdown-menu persistent-dropdown">
+        <datepicker {datepicker_attributes}></datepicker>
       </div>
     </div>
     '''
@@ -51,7 +48,8 @@ class Datepicker(Widget):
 
         super(Datepicker, self).__init__(bind, name, validators, label,
                                          description,
-                                         {'class': 'uneditable-input',
+                                         {'class': 'dropdown-toggle',
+                                          'data-toggle': 'dropdown',
                                           'type': 'text'})
 
         del self.attributes['ng-model']
