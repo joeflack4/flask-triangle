@@ -8,3 +8,9 @@
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
+
+
+from .datepicker import Datepicker
+
+
+__all__ = ['Datepicker']
