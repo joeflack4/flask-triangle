@@ -49,6 +49,9 @@ class FormBase(type):
                     obj.name = obj_name
                 if obj_name not in new_class._Form__widgets:
                     new_widgets.append(obj_name)
+            elif obj_name in new_class._Form_widgets:
+                # remove a property if it's not a widget anymore
+                new_class._Form__widgets.remove(obj_name)
             setattr(new_class, obj_name, obj)
         new_widgets.sort(key=lambda k: getattr(new_class, k).instance_counter)
         new_class._Form__widgets += new_widgets
