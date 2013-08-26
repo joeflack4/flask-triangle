@@ -15,6 +15,8 @@ import flask
 from flask_triangle import Triangle
 from flask_triangle import Form
 from flask_triangle.widgets.core import TextInput
+
+from nose.plugins.skip import SkipTest
 from nose.tools import assert_in
 
 
@@ -43,14 +45,15 @@ class TestRender(object):
         """
         Test if rendering raises any error.
         """
+        raise SkipTest('Not supported anymore.')
         with self.app.test_request_context():
             t('{{test()}}', test=SimpleForm('my_form'))
-
 
     def test_rendering_and_replace(self):
         """
         Test if rendering formats string.
         """
+        raise SkipTest('Not supported anymore.')
         with self.app.test_request_context():
             res = t('{{test(replace=\'ok\')}}', test=FormatForm('my_form'))
             assert_in('name="ok"', res)
