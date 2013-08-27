@@ -65,6 +65,11 @@ class Schema(dict):
             del schema['required']
 
     @staticmethod
+    def __is_strict(schema, fqn):
+        if schema['type'] == 'object':
+            schema['additionalProperties'] = False
+
+    @staticmethod
     def __merge(d, u):
         """
         The effective implementation of the merge with a recursive method.
@@ -79,12 +84,15 @@ class Schema(dict):
                 d[key] = u[key]
         return d
 
-    def compile(self):
+    def compile(self, strict=False):
         """
         Compile the specific grammar subset of Flask-triangle to generate a
         genuine JSON-schema.
         """
+        print strict
         if self.dirty:
+            if strict:
+                self.apply_func(self.__is_strict)
             self.apply_func(self.__compile)
             self.dirty = False
         return self

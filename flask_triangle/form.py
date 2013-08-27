@@ -66,7 +66,7 @@ class Form(six.with_metaclass(FormBase)):
 
     __widgets = list()
 
-    def __init__(self, name, schema=None, root=None):
+    def __init__(self, name, schema=None, strict=True, root=None):
         """
         :arg schema: A ``dict``. A custom schema to describe how-to validate
         resulting JSON from this form.
@@ -81,7 +81,8 @@ class Form(six.with_metaclass(FormBase)):
             self.schema = Schema()
             for widget in self:
                 self.schema.merge(widget.schema)
-        self.schema.compile()
+
+        self.schema.compile(strict)
 
         if root is not None:
             self.schema = self.schema.get('properties').get(root, self.schema)
