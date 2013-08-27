@@ -10,5 +10,6 @@
 
 from .required import TestRequired
 from .patterns import TestRegexp, TestPatternProperty
+from .types import TestAsBoolean
 
-__all__ = ['TestRequired', 'TestRegexp', 'TestPatternProperty']
+__all__ = ['TestRequired', 'TestRegexp', 'TestPatternProperty', 'TestAsBoolean']
