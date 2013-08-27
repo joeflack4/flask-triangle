@@ -40,19 +40,19 @@ class Input(Widget):
 class TextInput(Input):
     """A simple text input."""
     input_type = 'text'
-    json_type = 'text'
+    json_type = 'string'
 
 
 class PasswordInput(Input):
     """A password text input."""
     input_type = 'password'
-    json_type = 'text'
+    json_type = 'string'
 
 
 class EmailInput(Input):
     """An email text input."""
     input_type = 'email'
-    json_type = 'text'
+    json_type = 'string'
 
     def __init__(self, bind, name=None, validators=None, label=None,
                  description=None, html_attributes=None):
@@ -78,7 +78,7 @@ class CheckboxInput(Input):
 class RadioInput(Input):
     """A radio button."""
     input_type = 'radio'
-    json_type = 'text'
+    json_type = 'string'
     html_template = '<input {attributes}>{value}</input>'
 
     def __init__(self, bind, name=None, validators=None, label=None,
@@ -118,4 +118,4 @@ class RadioGroupInput(Input):
 class TextArea(Widget):
     """A text input based on the HTML textarea widget."""
     html_template = '<textarea {attributes}></textarea>'
-    json_type = 'text'
+    json_type = 'string'
