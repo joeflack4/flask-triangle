@@ -89,7 +89,6 @@ class Schema(dict):
         Compile the specific grammar subset of Flask-triangle to generate a
         genuine JSON-schema.
         """
-        print strict
         if self.dirty:
             if strict:
                 self.apply_func(self.__is_strict)
