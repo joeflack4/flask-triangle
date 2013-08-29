@@ -66,7 +66,7 @@ class Schema(dict):
 
     @staticmethod
     def __is_strict(schema, fqn):
-        if schema['type'] == 'object':
+        if schema.get('type') == 'object':
             schema['additionalProperties'] = False
 
     @staticmethod
