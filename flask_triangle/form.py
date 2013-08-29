@@ -12,7 +12,6 @@
 
 from __future__ import absolute_import
 
-import six
 import copy
 import flask
 
@@ -39,32 +38,37 @@ class FormBase(type):
         module = attrs.pop('__module__')
         new_class = super_new(mcs, name, bases, {'__module__': module})
 
-        # widget class attributes are moved in fields
-        new_class._Form__widgets = copy.deepcopy(new_class._Form__widgets)
-
         new_widgets = list()
         for obj_name, obj in attrs.items():
+            setattr(new_class, obj_name, obj)
             if isinstance(obj, Widget):
+
+                # use the attribute name as the widget's name
                 if obj.name is None:
                     obj.name = obj_name
-                if obj_name not in new_class._Form__widgets:
+
+                # for each widgets found, add the new ones
+                if obj_name not in new_class._form_widget_list:
                     new_widgets.append(obj_name)
-            elif obj_name in new_class._Form_widgets:
-                # remove a property if it's not a widget anymore
-                new_class._Form__widgets.remove(obj_name)
-            setattr(new_class, obj_name, obj)
+
+            elif obj_name in new_class._form_widget_list:
+                # if the attribute is not a widget but there was a former
+                # attribute which was a widget, removes it from the list.
+                new_class._form_widget_list.remove(obj_name)
+
         new_widgets.sort(key=lambda k: getattr(new_class, k).instance_counter)
-        new_class._Form__widgets += new_widgets
+        new_class._form_widget_list += new_widgets
 
         return new_class
 
 
-class Form(six.with_metaclass(FormBase)):
+class Form(object):
     """
     The Form acts as a container for multiple Widgets.
     """
 
-    __widgets = list()
+    __metaclass__ = FormBase
+    _form_widget_list = list()
 
     def __init__(self, name, schema=None, strict=True, root=None):
         """
@@ -97,4 +101,4 @@ class Form(six.with_metaclass(FormBase)):
         return json_validate(self.schema)
 
     def __iter__(self):
-        return (getattr(self, obj_name) for obj_name in self.__widgets)
+        return (getattr(self, obj_name) for obj_name in self._form_widget_list)
