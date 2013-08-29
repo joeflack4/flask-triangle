@@ -38,6 +38,8 @@ class FormBase(type):
         module = attrs.pop('__module__')
         new_class = super_new(mcs, name, bases, {'__module__': module})
 
+        new_class._form_widget_list = copy.deepcopy(new_class._form_widget_list)
+
         new_widgets = list()
         for obj_name, obj in attrs.items():
             setattr(new_class, obj_name, obj)
