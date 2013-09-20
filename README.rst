@@ -5,24 +5,26 @@ Flask-Triangle
 *Uncle Ben*
 
 
-Implements a Flask-WTF look-alike extension to create forms with AngularJS
-interactions.
+Flask-Triangle is utterly influenced by Flask-WTF_. It aims to provide you with
+similar features : form input handling and validation. The main difference is
+that Flask-Triangle is designed with AngularJS_ and XHR in mind.
 
 
-Features :
+Turnkey features :
 
-    * easy binding beetween a form and a JSON object
-    * client and server side validation
+    * A collection of ready to use widgets for common HTML inputs.
+    * A collection of ready to use widgets for UI-Bootstrap_.
+    * A collection of `Modifiers` to alter the behaviour of a widget,
+      especially the validation process.
 
-Requirements :
 
-    * server side :
+Advanced features :
 
-      - Flask (of-course)
-      - jsonschema
-      - six
+    * end-to-end validation based on JSONschema_.
+    * a simple internal API to let you create your own widgets and modifiers.
 
-    * client side :
 
-      - AngularJS
-
+.. _Flask-WTF: https://flask-wtf.readthedocs.org/en/latest/
+.. _AngularJS: http://angularjs.org/
+.. _UI-Bootstrap: http://angular-ui.github.io/bootstrap/
+.. _JSONschema: http://json-schema.org/
