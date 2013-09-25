@@ -13,7 +13,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .core import Input, TextInput
+from .text import Input, TextInput
 
 
 __all__ = ['Input', 'TextInput']
