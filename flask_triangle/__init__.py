@@ -16,6 +16,6 @@ from __future__ import absolute_import
 
 from .triangle import Triangle
 from .form import Form
+from .widget import Widget
 
-
-__all__ = ['Triangle', 'Form']
+__all__ = ['Triangle', 'Form', 'Widget']
