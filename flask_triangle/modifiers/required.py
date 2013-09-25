@@ -37,7 +37,7 @@ class Required(Modifier):
         if self.condition is True:
             self.attributes = {u'required': None}
         elif self.condition:
-            self.attributes = {u'ng-required': self.condition}
+            self.attributes = {u'data-ng-required': self.condition}
         else:
             self.attributes = {}
 

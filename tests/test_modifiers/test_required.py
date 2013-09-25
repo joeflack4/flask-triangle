@@ -33,8 +33,8 @@ class TestRequired(object):
         Add a 'ng-required' attribute when the required is a client-side
         condition.
         """
-        assert_in('ng-required', self.validator_conditional.attributes)
-        assert_equal(self.validator_conditional.attributes['ng-required'],
+        assert_in('data-ng-required', self.validator_conditional.attributes)
+        assert_equal(self.validator_conditional.attributes['data-ng-required'],
                      'a_value|angular')
 
     def test_2(self):
