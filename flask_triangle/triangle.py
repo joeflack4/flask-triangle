@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 from flask import request, abort
 from jsonschema import validate, SchemaError, ValidationError
 
-from .flask import angular_filter, widget_test, TriangleUndefined
+from .jinja import angular_filter, widget_test, TriangleUndefined
 
 
 def json_validate(schema):
