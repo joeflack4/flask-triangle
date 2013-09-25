@@ -3,7 +3,9 @@
     flask_triangle.widgets.core
     ---------------------------
 
-    Implements the base widgets of HTML5.
+    Implement the base widgets of HTML5 supported by AngularJS.
+
+    * input
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -13,10 +15,48 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .base import Widget
-from flask_triangle.validators import Regexp
+from flask_triangle.widget import Widget
+import flask_triangle.modifiers
 
 
+class Input(Widget):
+    """
+    HTML input element control with angular data-binding. Input control follows
+    HTML5 input types and polyfills the HTML5 validation behavior for older
+    browsers.
+    """
+
+    schema = {'type': 'string'}
+
+    html_template = '<input {{widget.html_attributes}}></input>'
+
+    def __customize__(self, required=False, min_length=None, max_length=None,
+                      pattern=None, change=None):
+
+        if required is not False:
+            self.modifiers.append(flask_triangle.modifiers.Required(required))
+        if min_length is not None:
+            pass    #TODO
+        if max_length is not None:
+            pass    #TODO
+        if pattern is not None:
+            self.modifiers.append(flask_triangle.modifiers.Regexp(pattern))
+        if change is not None:
+            self.html_attributes['data-ng-change'] = change
+
+class TextInput(Input):
+    """
+    Standard HTML text input with angular data binding.
+    """
+
+    def __customize__(self, trim=True):
+        self.html_attributes['type'] = 'text'
+
+
+
+
+####################################
+'''
 class Input(Widget):
     """
     Render a basic ``<input>`` field.
@@ -119,3 +159,5 @@ class TextArea(Widget):
     """A text input based on the HTML textarea widget."""
     html_template = '<textarea {attributes}></textarea>'
     json_type = 'string'
+'''
+
