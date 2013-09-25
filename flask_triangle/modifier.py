@@ -3,7 +3,7 @@
 """
 
 
-class Validator(object):
+class Modifier(object):
     """
     The base class for every validators.
     """

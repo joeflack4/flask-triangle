@@ -10,10 +10,10 @@
 
 from __future__ import absolute_import
 from flask_triangle.schema import Schema
-from .base import Validator
+from ..modifier import Modifier
 
 
-class Multiple(Validator):
+class Multiple(Modifier):
     """
     Add a constraint allowing more than one entry to be selected in a `select`
     widget. This will affect the attributes of HTML widget and the validation

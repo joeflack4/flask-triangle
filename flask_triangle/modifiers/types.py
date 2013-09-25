@@ -12,10 +12,10 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from .base import Validator
+from ..modifier import Modifier
 
 
-class AsBoolean(Validator):
+class AsBoolean(Modifier):
     """
     The widget value could either be `true` or `false`.
     """

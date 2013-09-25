@@ -5,10 +5,10 @@ flask_triangle.
 
 
 from __future__ import absolute_import
-from .base import Validator
+from ..modifier import Modifier
 
 
-class Required(Validator):
+class Required(Modifier):
     """
     Adds a required constraint to an input.
 

@@ -5,10 +5,10 @@ flask_triangle.
 
 
 from __future__ import absolute_import
-from .base import Validator
+from ..modifier import Modifier
 
 
-class Regexp(Validator):
+class Regexp(Modifier):
     """
     Adds a regular expresion constraint to an input.
 
@@ -40,7 +40,7 @@ class Regexp(Validator):
             schema[u'pattern'] = self.regexp
 
 
-class PatternProperty(Validator):
+class PatternProperty(Modifier):
     """
     Adds an intermediate asPatternProperty field on object in a JSON schema
     based on their FQN and an argument list.
