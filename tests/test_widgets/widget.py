@@ -14,16 +14,12 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 
-from flask_triangle.widgets.base import Widget
+from flask_triangle import Widget
+
 from nose.tools import assert_equal, assert_not_in, assert_in
-from jsonschema import Draft3Validator
-from flask_triangle.validators.base import Validator
-
-import mock
 
 
-Widget.json_type = 'test'
-Widget.html_template = '<test {attributes}/>'
+
 
 
 class TestWidgetInit(object):

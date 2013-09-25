@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 """
-    template
-    --------
+    tests.jinja
+    -----------
+
+    Test the features added to jinja by the Flask-Triangle extension.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -9,7 +11,7 @@
 
 
 from __future__ import absolute_import
-from .init import TestInit
-from .template import TestJinjaFilter, TestJinjaTest
 
-__all__ = ['TestInit', 'TestJinjaFilter', 'TestJinjaTest']
+
+from .filter import TestJinjaFilter
+from .cond import TestJinjaTest

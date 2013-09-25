@@ -1,13 +1,12 @@
 # -*- encoding: utf-8 -*-
 """
-All tests to execute
+    template
+    --------
+
+    :copyright: (c) 2013 by Morgan Delahaye-Prat.
+    :license: BSD, see LICENSE for more details.
 """
 
 
-from .widgets import *
-from .helpers import *
-from .validators import *
-from .forms import *
-from .flask import *
-
-from .schema import TestSchema0, TestSchema1, TestSchema2, TestSchema3
+from __future__ import absolute_import
+from __future__ import unicode_literals

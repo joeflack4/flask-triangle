@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 from nose.tools import assert_equal
 
-from flask_triangle.validators import AsBoolean
+from flask_triangle.modifiers import AsBoolean
 from flask_triangle.schema import Schema
 
 
