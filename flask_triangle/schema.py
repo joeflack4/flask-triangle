@@ -103,8 +103,9 @@ class Schema(dict):
         Unlike the update method, if two entries are of the same collection
         type, their values will be merged.
         """
-        self.dirty = True
-        Schema.__merge(self, other)
+        if other is not None:
+            self.dirty = True
+            Schema.__merge(self, other)
 
 
     def apply_func(self, func, fqn=''):

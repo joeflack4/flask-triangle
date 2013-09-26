@@ -241,3 +241,10 @@ class TestSchema3(object):
         #      recursive method implied in the merging process.
         self.schema.merge(Schema({'d': {'e': 10}}))
         assert True
+
+    def test_6(self):
+        """
+        Merging a schema with None does not modify the first one
+        """
+        self.schema.merge(None)
+        assert_equal(len(self.schema), 4)
