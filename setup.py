@@ -6,10 +6,10 @@ from setuptools import setup, find_packages
 setup(
 
     name='Flask-Triangle',
-    version='0.4.4',
+    version='0.5.0',
     author='Morgan Delahaye-Prat',
     author_email='mdp@arjel.fr',
-    description=('Integration of Angular and Flask.'),
+    description=('Integration of AngularJS and Flask.'),
     long_description=open('README.rst').read(),
     packages=find_packages(),
     zip_safe=False,
