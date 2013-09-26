@@ -49,15 +49,17 @@ class HtmlAttr(dict, UnicodeMixin):
         purpose with Javascript, `True` and `False` are in lower case.
         """
         string = '"{}"'
+
         if type(value) is bool:
             return string.format(unicode(value).lower())
 
         value = unicode(value)
+
         if value.endswith('|angular'):
             value = value[:-8]
-            string = '"{{{{{{{{{}}}}}}}}}"'
+            string = '"{{{{{{{{\'{}\'|angular}}}}}}}}"'
 
-        return string.format(value)
+        return string.format(value.replace('\'', '\\\''))
 
     @staticmethod
     def _to_attr(key, value):
@@ -334,5 +336,8 @@ class Widget(object):
             >>> a(name='demo')
             '<input name="demo" ng-model="hello.world"/>
         """
+        for modifier in self.modifiers:
+            if hasattr(modifier, 'attributes'):
+                self.html_attributes.update(modifier.attributes)
         template = Template(self.html_template).render(widget=self)
         return HTMLString(template.strip().format(**kwargs))

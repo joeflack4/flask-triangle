@@ -22,22 +22,22 @@ class TestRegexp(object):
         self.validator = Regexp('[A-Z]{4}')
 
     def test_0(self):
-        """Create a dict with an ng-pattern value."""
-        assert_in('ng-pattern', self.validator.attributes)
+        """Create a dict with an data-ng-pattern value."""
+        assert_in('data-ng-pattern', self.validator.attributes)
 
     def test_1(self):
         """
         Attribute value is prefixed and suffixed by slashes to conform with the
         javascript regexp notation.
         """
-        assert_equal(self.validator.attributes['ng-pattern'][0],
+        assert_equal(self.validator.attributes['data-ng-pattern'][0],
                      '/')
-        assert_equal(self.validator.attributes['ng-pattern'][-1],
+        assert_equal(self.validator.attributes['data-ng-pattern'][-1],
                      '/')
 
     def test_2(self):
         """Curly bracket are escaped in the regexp."""
-        assert_equal(self.validator.attributes['ng-pattern'], '/[A-Z]{{4}}/')
+        assert_equal(self.validator.attributes['data-ng-pattern'], '/[A-Z]{{4}}/')
 
     def test_3(self):
         """

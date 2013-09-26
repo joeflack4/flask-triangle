@@ -8,7 +8,7 @@ setup(
     name='Flask-Triangle',
     version='0.5.0',
     author='Morgan Delahaye-Prat',
-    author_email='mdp@arjel.fr',
+    author_email='mdp@m-del.fr',
     description=('Integration of AngularJS and Flask.'),
     long_description=open('README.rst').read(),
     packages=find_packages(),

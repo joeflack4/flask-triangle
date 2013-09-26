@@ -33,7 +33,7 @@ class Regexp(Modifier):
         if not self.client:
             return dict()
         res = self.regexp.replace(u'{', u'{{').replace(u'}', u'}}')
-        return {u'ng-pattern': u'/{}/'.format(res)}
+        return {u'data-ng-pattern': u'/{}/'.format(res)}
 
     def alter_schema(self, schema, fqn):
         if schema[u'type'] != u'object':
