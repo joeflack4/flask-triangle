@@ -92,13 +92,13 @@ class TestAttributesAngular(object):
         #attributes are formated
         with self.app.test_request_context():
             assert_equal(t('{{a}}', a=unicode(test).format()),
-                         'attr="{{\'value\'|angular}}"')
+                         'attr="{{value}}"')
 
     def test_complex(self):
         test = HtmlAttr(attr='value|date: \'fullDate\'|angular')
         #attributes are formated
         with self.app.test_request_context():
             assert_equal(t('{{a}}', a=unicode(test).format()),
-                         'attr="{{\'value|date: \\\'fullDate\\\'\'|angular}}"')
+                         'attr="{{value|date: \'fullDate\'}}"')
 
 

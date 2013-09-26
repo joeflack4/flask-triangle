@@ -57,9 +57,9 @@ class HtmlAttr(dict, UnicodeMixin):
 
         if value.endswith('|angular'):
             value = value[:-8]
-            string = '"{{{{{{{{\'{}\'|angular}}}}}}}}"'
+            string = '"{{{{{{{{{}}}}}}}}}"'
 
-        return string.format(value.replace('\'', '\\\''))
+        return string.format(value)
 
     @staticmethod
     def _to_attr(key, value):

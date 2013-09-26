@@ -20,7 +20,7 @@ from nose.tools import assert_equal
 
 
 # A little helper to simulate final rendering.
-t = flask.render_template_string
+t = lambda x: flask.render_template_string('{{data}}', data=x)
 
 
 class TestTextInput(object):
@@ -92,7 +92,7 @@ class TestTextInput(object):
 
     def test_6(self):
         """
-        Custom HTML attribut are rendered : pattern
+        Custom HTML attribute are rendered
         """
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
@@ -103,7 +103,7 @@ class TestTextInput(object):
 
     def test_7(self):
         """
-        Custom HTML attribut are rendered : pattern
+        Custom HTML attribute can host simple angular expression
         """
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
@@ -111,3 +111,38 @@ class TestTextInput(object):
             assert_equal(t(attr()),
                          '<input data-ng-model="bind" data-test="{{test}}" name="name" type="text">'
                          '</input>')
+
+    def test_8(self):
+        """
+        Custom HTML attribute can host complex angular expression
+        """
+        with self.app.test_request_context():
+            attr = TextInput('bind', name='name',
+                             html_attributes={'placeholder': 'function(a.nested.param, other)|angular'})
+            assert_equal(t(attr()),
+                         '<input data-ng-model="bind" name="name" placeholder="{{function(a.nested.param, other)}}" type="text">'
+                         '</input>')
+
+    def test_9(self):
+        """
+        Custom HTML attribute can be parameterized.
+        """
+        with self.app.test_request_context():
+            attr = TextInput('bind', name='name',
+                             html_attributes={'data-test': '{param}|angular'})
+            assert_equal(t(attr(param='test')),
+                         '<input data-ng-model="bind" data-test="{{test}}" name="name" type="text">'
+                         '</input>')
+
+    def test_10(self):
+        """
+        Custom HTML attribute can host complex parameterized angular expression
+        """
+
+        with self.app.test_request_context():
+            attr = TextInput('bind', name='name',
+                             html_attributes={'placeholder': 'function(a.nested.{param0}, {param1})|angular'})
+            assert_equal(t(attr(param0='test', param1='success')),
+                         '<input data-ng-model="bind" name="name" placeholder="{{function(a.nested.test, success)}}" type="text">'
+                         '</input>')
+
