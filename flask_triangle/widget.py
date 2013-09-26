@@ -288,8 +288,8 @@ class Widget(object):
                 if not args:
                     customize(self)
                 else:
-                    local_kwargs = dict({(k, v) for k, v in kwargs.iteritems()
-                                                if k in args})
+                    local_kwargs = dict((k, v) for k, v in kwargs.iteritems()
+                                                if k in args)
                     customize(self, **local_kwargs)
         # start the recursion
         if self.__class__ is not Widget:

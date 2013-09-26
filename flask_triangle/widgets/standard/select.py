@@ -20,7 +20,7 @@ class Select(Widget):
 
     schema = {'type': 'string'}
 
-    html_template = ('<select {widget.attributes}>'
+    html_template = ('<select {{widget.html_attributes}}>'
                      '{{widget.render_options()}}'
                      '</select>')
 
@@ -32,18 +32,19 @@ class Select(Widget):
             self.modifiers.append(flask_triangle.modifiers.Multiple())
 
         if isinstance(options, list):
-            self.choices = options
+            self.options = options
         else:
+            self.options = None
             self.html_attributes['data-ng-options'] = options
 
     def render_options(self):
         res = ''
-        if self.choices is not None:
-            choices = sorted([option + (None, None)[0:3-len(option)]
-                              for option in self.choices], key=lambda x: x[2])
+        if self.options is not None:
+            options = sorted([option + (None, None)[0:3-len(option)]
+                             for option in self.options], key=lambda x: x[2])
 
             current_group = None
-            for title, value, group in choices:
+            for title, value, group in options:
                 if group != current_group:
                     if current_group is not None:
                         res += '</optgroup>'
