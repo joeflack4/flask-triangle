@@ -14,6 +14,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from .text import Input, TextInput
+from .select import Select
 
-
-__all__ = ['Input', 'TextInput']
+__all__ = ['Input', 'TextInput', 'Select']
