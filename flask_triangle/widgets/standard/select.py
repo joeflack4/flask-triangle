@@ -31,10 +31,10 @@ class Select(Widget):
         if multiple:
             self.modifiers.append(flask_triangle.modifiers.Multiple())
 
-        if isinstance(choices, list):
-            self.choices = choices
+        if isinstance(options, list):
+            self.choices = options
         else:
-            self.html_attributes['data-ng-options'] = choices
+            self.html_attributes['data-ng-options'] = options
 
     def render_options(self):
         res = ''
