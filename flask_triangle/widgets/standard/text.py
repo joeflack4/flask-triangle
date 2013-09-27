@@ -36,9 +36,9 @@ class Input(Widget):
         if required is not False:
             self.modifiers.append(flask_triangle.modifiers.Required(required))
         if min_length is not None:
-            pass    #TODO
+            self.modifiers.append(flask_triangle.modifiers.MinimumLength(min_length))
         if max_length is not None:
-            pass    #TODO
+            self.modifiers.append(flask_triangle.modifiers.MaximumLength(max_length))
         if pattern is not None:
             self.modifiers.append(flask_triangle.modifiers.Regexp(pattern))
         if change is not None:
@@ -81,6 +81,21 @@ class EmailInput(Input):
             val = Regexp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-.])*$',
                          client=False)
             self.modifiers.append(val)
+
+
+class NumberInput(Input):
+    """
+    Text input with number validation and transformation.
+    """
+
+    schema = {'type': 'number'}
+
+    def __customize__(self, min=None, max=None):
+        self.html_attributes['type'] = 'number'
+        if min is not None:
+            self.modifiers.append(flask_triangle.modifiers.Minimum(min))
+        if max is not None:
+            self.modifiers.append(flask_triangle.modifiers.Maximum(max))
 
 
 class Textarea(Input):

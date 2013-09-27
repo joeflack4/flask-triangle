@@ -20,8 +20,6 @@ from tests import cvr
 from nose.tools import assert_equal
 
 
-
-
 class TestTextInput(object):
 
     def setup(self):
@@ -145,3 +143,22 @@ class TestTextInput(object):
                          '<input data-ng-model="bind" name="name" placeholder="{{function(a.nested.test, success)}}" type="text">'
                          '</input>')
 
+    def test_11(self):
+        """
+        Custom TextInput arguments are processed and rendered : pattern
+        """
+        with self.app.test_request_context():
+            pattern = TextInput('bind', name='name', min_length='3')
+            assert_equal(cvr(pattern()),
+                         '<input data-ng-minlength="3" data-ng-model="bind" name="name" type="text">'
+                         '</input>')
+
+    def test_12(self):
+        """
+        Custom TextInput arguments are processed and rendered : pattern
+        """
+        with self.app.test_request_context():
+            pattern = TextInput('bind', name='name', max_length='10')
+            assert_equal(cvr(pattern()),
+                         '<input data-ng-maxlength="10" data-ng-model="bind" name="name" type="text">'
+                         '</input>')
