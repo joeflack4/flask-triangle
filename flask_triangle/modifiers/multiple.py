@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-    template
-    --------
+    flask_triangle.modifiers.multiple
+    ---------------------------------
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
