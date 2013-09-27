@@ -17,10 +17,7 @@ from flask_triangle import Triangle
 from flask_triangle.widgets.special import Label
 
 from nose.tools import assert_equal
-
-
-# A little helper to simulate final rendering.
-t = flask.render_template_string
+from tests import cvr
 
 
 class TestLabel(object):
@@ -36,5 +33,5 @@ class TestLabel(object):
         simple rendering
         """
         with self.app.test_request_context():
-            assert_equal(t(self.simple()), '<span name="name">{{bind}}</span>')
+            assert_equal(cvr(self.simple()), '<span name="name">{{bind}}</span>')
 

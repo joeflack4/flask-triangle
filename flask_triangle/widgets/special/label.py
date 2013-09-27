@@ -20,7 +20,7 @@ class Label(Widget):
     """
 
     html_template = ('<span {{widget.html_attributes}}>'
-                     '{{ \'{{{{\' + widget.bind + \'|angular}}}}\' }}'
+                     '{{ \'{{{{\' + widget.bind + \'}}}}\' }}'
                      '</span>')
 
     @property

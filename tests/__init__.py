@@ -10,3 +10,8 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+import flask
+
+# client view rendering
+cvr = lambda x: flask.render_template_string('{{data}}', data=x)

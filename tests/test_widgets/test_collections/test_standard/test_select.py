@@ -13,15 +13,10 @@ from __future__ import unicode_literals
 
 import flask
 from flask_triangle import Triangle
-
 from flask_triangle.widgets.standard import Select
 
 from nose.tools import assert_equal
-
-
-# A little helper to simulate final rendering.
-t = flask.render_template_string
-
+from tests import cvr
 
 class TestTextInput(object):
 
@@ -36,7 +31,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             select = Select('bind', name='name',
                             options='label for value in array')
-            assert_equal(t(select()),
+            assert_equal(cvr(select()),
                          '<select data-ng-model="bind" data-ng-options="label for value in array" name="name">'
                          '</select>')
 
@@ -51,7 +46,7 @@ class TestTextInput(object):
                                      ('choice2',),
                                      ('choice3',),
                                      ('choice4',)])
-            assert_equal(t(select()),
+            assert_equal(cvr(select()),
                          '<select data-ng-model="bind" name="name">'
                          '<option>choice0</option>'
                          '<option>choice1</option>'
@@ -71,7 +66,7 @@ class TestTextInput(object):
                                      ('choice2', 'value2'),
                                      ('choice3', 'value3'),
                                      ('choice4', 'value4')])
-            assert_equal(t(select()),
+            assert_equal(cvr(select()),
                          '<select data-ng-model="bind" name="name">'
                          '<option value="value0">choice0</option>'
                          '<option value="value1">choice1</option>'
@@ -91,7 +86,7 @@ class TestTextInput(object):
                                      ('choice2', 'value2', 'group0'),
                                      ('choice3', 'value3', 'group1'),
                                      ('choice4', 'value4', 'group1')])
-            assert_equal(t(select()),
+            assert_equal(cvr(select()),
                          '<select data-ng-model="bind" name="name">'
                          '<option value="value0">choice0</option>'
                          '<optgroup label="group0">'
@@ -111,6 +106,6 @@ class TestTextInput(object):
         with self.app.test_request_context():
             select = Select('bind', name='name', multiple=True,
                             options='label for value in array')
-            assert_equal(t(select()),
+            assert_equal(cvr(select()),
                          '<select data-ng-model="bind" data-ng-options="label for value in array" multiple name="name">'
                          '</select>')

@@ -15,12 +15,11 @@ import flask
 from flask_triangle import Triangle
 
 from flask_triangle.widgets.standard import TextInput
+from tests import cvr
 
 from nose.tools import assert_equal
 
 
-# A little helper to simulate final rendering.
-t = lambda x: flask.render_template_string('{{data}}', data=x)
 
 
 class TestTextInput(object):
@@ -36,7 +35,7 @@ class TestTextInput(object):
         simple rendering
         """
         with self.app.test_request_context():
-            assert_equal(t(self.simple()),
+            assert_equal(cvr(self.simple()),
                          '<input data-ng-model="bind" name="name" type="text">'
                          '</input>')
 
@@ -46,7 +45,7 @@ class TestTextInput(object):
         """
         with self.app.test_request_context():
             self.simple.bind = 'other'
-            assert_equal(t(self.simple()),
+            assert_equal(cvr(self.simple()),
                          '<input data-ng-model="other" name="name" type="text">'
                          '</input>')
 
@@ -56,7 +55,7 @@ class TestTextInput(object):
         """
         with self.app.test_request_context():
             self.simple.bind = '{param}'
-            assert_equal(t(self.simple(param='ok')),
+            assert_equal(cvr(self.simple(param='ok')),
                          '<input data-ng-model="ok" name="name" type="text">'
                          '</input>')
 
@@ -66,7 +65,7 @@ class TestTextInput(object):
         """
         with self.app.test_request_context():
             required = TextInput('bind', name='name', required=True)
-            assert_equal(t(required()),
+            assert_equal(cvr(required()),
                          '<input data-ng-model="bind" name="name" required type="text">'
                          '</input>')
 
@@ -76,7 +75,7 @@ class TestTextInput(object):
         """
         with self.app.test_request_context():
             required = TextInput('bind', name='name', required='angular')
-            assert_equal(t(required()),
+            assert_equal(cvr(required()),
                          '<input data-ng-model="bind" data-ng-required="angular" name="name" type="text">'
                          '</input>')
 
@@ -86,7 +85,7 @@ class TestTextInput(object):
         """
         with self.app.test_request_context():
             pattern = TextInput('bind', name='name', pattern='[A-Z]{5}')
-            assert_equal(t(pattern()),
+            assert_equal(cvr(pattern()),
                          '<input data-ng-model="bind" data-ng-pattern="/[A-Z]{5}/" name="name" type="text">'
                          '</input>')
 
@@ -97,7 +96,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
                              html_attributes={'data-test': 'test'})
-            assert_equal(t(attr()),
+            assert_equal(cvr(attr()),
                          '<input data-ng-model="bind" data-test="test" name="name" type="text">'
                          '</input>')
 
@@ -108,7 +107,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
                              html_attributes={'data-test': 'test|angular'})
-            assert_equal(t(attr()),
+            assert_equal(cvr(attr()),
                          '<input data-ng-model="bind" data-test="{{test}}" name="name" type="text">'
                          '</input>')
 
@@ -119,7 +118,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
                              html_attributes={'placeholder': 'function(a.nested.param, other)|angular'})
-            assert_equal(t(attr()),
+            assert_equal(cvr(attr()),
                          '<input data-ng-model="bind" name="name" placeholder="{{function(a.nested.param, other)}}" type="text">'
                          '</input>')
 
@@ -130,7 +129,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
                              html_attributes={'data-test': '{param}|angular'})
-            assert_equal(t(attr(param='test')),
+            assert_equal(cvr(attr(param='test')),
                          '<input data-ng-model="bind" data-test="{{test}}" name="name" type="text">'
                          '</input>')
 
@@ -142,7 +141,7 @@ class TestTextInput(object):
         with self.app.test_request_context():
             attr = TextInput('bind', name='name',
                              html_attributes={'placeholder': 'function(a.nested.{param0}, {param1})|angular'})
-            assert_equal(t(attr(param0='test', param1='success')),
+            assert_equal(cvr(attr(param0='test', param1='success')),
                          '<input data-ng-model="bind" name="name" placeholder="{{function(a.nested.test, success)}}" type="text">'
                          '</input>')
 
