@@ -11,6 +11,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+from flask_triangle.modifier import Modifier
+
 
 class Minimum(Modifier):
     """
@@ -21,7 +23,7 @@ class Minimum(Modifier):
         """
         """
         self.value
-    
+
     @property
     def attributes(self):
         return {'min': value}
@@ -40,7 +42,7 @@ class Maximum(Modifier):
         """
         """
         self.value
-    
+
     @property
     def attributes(self):
         return {'max': value}
@@ -59,7 +61,7 @@ class MinimumLength(Modifier):
         """
         """
         self.value
-    
+
     @property
     def attributes(self):
         return {'data-ng-minlength': value}
