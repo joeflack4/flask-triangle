@@ -22,11 +22,11 @@ class Minimum(Modifier):
     def __init__(self, value):
         """
         """
-        self.value
+        self.value = value
 
     @property
     def attributes(self):
-        return {'min': value}
+        return {'min': self.value}
 
     def alter_schema(self, schema, fqn):
         if schema['type'] != 'object':
@@ -41,11 +41,11 @@ class Maximum(Modifier):
     def __init__(self, value):
         """
         """
-        self.value
+        self.value = value
 
     @property
     def attributes(self):
-        return {'max': value}
+        return {'max': self.value}
 
     def alter_schema(self, schema, fqn):
         if schema['type'] != 'object':
@@ -60,11 +60,11 @@ class MinimumLength(Modifier):
     def __init__(self, value):
         """
         """
-        self.value
+        self.value = value
 
     @property
     def attributes(self):
-        return {'data-ng-minlength': value}
+        return {'data-ng-minlength': self.value}
 
     def alter_schema(self, schema, fqn):
         if schema['type'] != 'object':
@@ -79,11 +79,11 @@ class MaximumLength(Modifier):
     def __init__(self, value):
         """
         """
-        self.value
+        self.value = value
 
     @property
     def attributes(self):
-        return {'data-ng-maxlength': value}
+        return {'data-ng-maxlength': self.value}
 
     def alter_schema(self, schema, fqn):
         if schema['type'] != 'object':
