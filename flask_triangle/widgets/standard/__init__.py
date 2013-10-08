@@ -13,7 +13,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .text import Input, TextInput, NumberInput
+from .text import Input, TextInput, NumberInput, Textarea
 from .select import Select
 
-__all__ = ['Input', 'TextInput', 'NumberInput', 'Select']
+__all__ = ['Input', 'TextInput', 'NumberInput', 'Textarea', 'Select']
