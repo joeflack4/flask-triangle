@@ -47,5 +47,5 @@ class Required(Modifier):
             return
 
         if schema.get(u'type') == u'object' and u'properties' in schema:
-            schema[u'required'] = schema.get(u'required', []) + \
-                                  [k for k in schema.get(u'properties', [])]
+            schema[u'required'] = list(set(schema.get(u'required', []) + \
+                                  [k for k in schema.get(u'properties', [])]))
