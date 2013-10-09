@@ -11,6 +11,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import flask_triangle
 from flask_triangle.widget import Widget
 
 

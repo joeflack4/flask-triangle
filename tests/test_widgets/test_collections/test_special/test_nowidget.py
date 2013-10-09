@@ -34,3 +34,8 @@ class TestNowidget(object):
         """
         with self.app.test_request_context():
             assert_equal(cvr(self.simple()), '')
+
+    def test_1(self):
+        with self.app.test_request_context():
+            widget = Nowidget('bind', required=True)
+            assert_equal(cvr(widget()), '')
