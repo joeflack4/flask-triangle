@@ -14,5 +14,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from .label import Label
+from .nowidget import Nowidget
 
-__all__ = ['Label']
+__all__ = ['Label', 'Nowidget']
