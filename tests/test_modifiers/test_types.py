@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 from nose.tools import assert_equal
 
-from flask_triangle.modifiers import AsBoolean
+from flask_triangle.modifiers import AsBoolean, AsInteger
 from flask_triangle.schema import Schema
 
 
@@ -21,7 +21,7 @@ class TestAsBoolean(object):
     def setup(self):
         self.validator = AsBoolean()
 
-    def test_3(self):
+    def test(self):
         """
         Modify the type of the leaf object.
         """
@@ -32,3 +32,21 @@ class TestAsBoolean(object):
         schema.apply_func(self.validator.alter_schema)
 
         assert_equal('boolean', schema['properties']['normal']['type'])
+
+
+class TestAsInteger(object):
+
+    def setup(self):
+        self.validator = AsInteger()
+
+    def test(self):
+        """
+        Modify the type of the leaf object.
+        """
+        schema = Schema({'type': 'object',
+                         'properties': {'normal': Schema({'type': 'string'})},
+                         'required': ['normal']})
+
+        schema.apply_func(self.validator.alter_schema)
+
+        assert_equal('integer', schema['properties']['normal']['type'])

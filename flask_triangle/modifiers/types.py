@@ -23,3 +23,13 @@ class AsBoolean(Modifier):
     def alter_schema(self, schema, fqn):
         if schema['type'] != 'object':
             schema['type'] = 'boolean'
+
+
+class AsInteger(Modifier):
+    """
+    The widget value is an integer.
+    """
+
+    def alter_schema(self, schema, fqn):
+        if schema['type'] != 'object':
+            schema['type'] = 'integer'
