@@ -13,6 +13,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .typeahead import Typeahead 
+from .typeahead import Typeahead
+from .datepicker import Datepicker
 
-__all__ = ['Typeahead']
+__all__ = ['Typeahead', 'Datepicker']
