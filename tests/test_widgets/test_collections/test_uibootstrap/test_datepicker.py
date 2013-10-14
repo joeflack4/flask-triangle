@@ -43,7 +43,7 @@ class TestTypeahead(object):
         """
         simple = Datepicker('bind', popup=True)
         with self.app.test_request_context():
-            assert_equal(cvr(simple()), '<input data-datepicker-popup="fullDate" data-is-open="_bind" data-ng-click="_bind != _bind;" data-ng-init="_bind = true;" data-ng-model="bind" type="text"></input>')
+            assert_equal(cvr(simple()), '<input data-datepicker-popup="fullDate" data-is-open="_bind" data-ng-click="_bind != _bind;" data-ng-init="_bind = false;" data-ng-model="bind" type="text"></input>')
 
     def test_2(self):
         """

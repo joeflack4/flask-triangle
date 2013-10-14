@@ -45,7 +45,7 @@ class Datepicker(Widget):
             if type(popup) is bool:
                 state = self.bind.replace('.', '_')
                 self.html_attributes['data-ng-init'] = \
-                    '_{} = true;'.format(state)
+                    '_{} = false;'.format(state)
                 self.html_attributes['data-ng-click'] = \
                     '_{} != _{};'.format(state, state)
                 self.html_attributes['data-is-open'] = '_{}'.format(state)
