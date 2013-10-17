@@ -23,6 +23,12 @@ class Label(Widget):
                      '{{ \'{{{{\' + widget.bind + \'}}}}\' }}'
                      '">')
 
+    def __customize__(self):
+        self.html_attributes['disabled'] = None
+        self.html_attributes['type'] = 'text'
+
+
+
     @property
     def bind(self):
         return self._bind
