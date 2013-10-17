@@ -19,9 +19,9 @@ class Label(Widget):
     Simple text rendering in a <span> element.
     """
 
-    html_template = ('<span {{widget.html_attributes}}>'
+    html_template = ('<input {{widget.html_attributes}} value="'
                      '{{ \'{{{{\' + widget.bind + \'}}}}\' }}'
-                     '</span>')
+                     '">')
 
     @property
     def bind(self):

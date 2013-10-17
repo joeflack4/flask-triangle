@@ -33,5 +33,5 @@ class TestLabel(object):
         simple rendering
         """
         with self.app.test_request_context():
-            assert_equal(cvr(self.simple()), '<span name="name">{{bind}}</span>')
+            assert_equal(cvr(self.simple()), '<input name="name" value="{{bind}}">')
 
