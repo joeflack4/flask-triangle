@@ -85,7 +85,9 @@ class Form(object):
             self.schema = Schema(schema)
         else:
             self.schema = Schema()
+
             for widget in self:
+                #print widget, widget.schema
                 self.schema.merge(widget.schema)
 
         self.schema.compile(strict)

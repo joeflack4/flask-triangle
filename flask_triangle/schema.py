@@ -14,6 +14,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import collections
+import copy
 
 
 class Schema(dict):
@@ -81,7 +82,7 @@ class Schema(dict):
             elif type(val) is list and type(d.get(key, None)) is list:
                 d[key] = list(set(d.get(key, []) + val))
             else:
-                d[key] = u[key]
+                d[key] = copy.deepcopy(u[key])
         return d
 
     def compile(self, strict=False):

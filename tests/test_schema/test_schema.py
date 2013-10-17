@@ -248,3 +248,18 @@ class TestSchema3(object):
         """
         self.schema.merge(None)
         assert_equal(len(self.schema), 4)
+
+    def test_7(self):
+        """
+        If the recipient schema (A) get a subschema (B) from a merge with
+        another schema (C), any modifications of B in A will have no effect
+        on B in C (and vice-versa).
+        """
+
+        recipient = Schema()
+        recipient.merge(self.schema)
+        recipient['d']['a'] = 10
+        self.schema['d']['a'] = 8
+
+        assert_equal(self.schema['d']['a'], 8)
+        assert_equal(recipient['d']['a'], 10)
