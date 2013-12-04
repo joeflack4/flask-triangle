@@ -9,11 +9,23 @@
 
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
+
+import sys
 
 
-class HTMLString(unicode):
+# compatibility with python 2.x and 3.x
+if sys.version_info > (3, 0):
+    base = str
+else:
+    base = unicode
+
+
+class HTMLString(base):
     """
-    A `unicode` string considered as sage HTML.
+    The HTMLString object is a standard string ehanced with an __html__ method.
+    It's content will render as is in the template.
     """
+
     def __html__(self):
         return self
