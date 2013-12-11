@@ -83,7 +83,7 @@ class HtmlAttr(dict, UnicodeMixin):
         """
         Return all the attributes of a string.
         """
-        unique = dict((self._get_name(k), v) for k, v in self.iteritems())
+        unique = dict((self._get_name(k), v) for k, v in self.items())
         return ' '.join(self._to_attr(k, v) for k, v in sorted(unique.items()))
 
 
@@ -288,7 +288,7 @@ class Widget(object):
                 if not args:
                     customize(self)
                 else:
-                    local_kwargs = dict((k, v) for k, v in kwargs.iteritems()
+                    local_kwargs = dict((k, v) for k, v in kwargs.items()
                                                 if k in args)
                     customize(self, **local_kwargs)
         # start the recursion
