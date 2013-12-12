@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 
 
 from flask_triangle import Widget
+from flask_triangle.helpers import PY3
 
 from jsonschema import Draft3Validator
 from nose.tools import assert_equal, assert_not_in, assert_in
@@ -21,6 +22,9 @@ class SimpleCustomWidget(Widget):
 
     html_template = '<tag {{widget.html_attributes}}></tag>'
     schema = {'type': 'string'}
+
+if PY3:
+    unicode = str
 
 
 class TestRendering(object):

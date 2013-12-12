@@ -47,7 +47,7 @@ class Schema(dict):
 
         pattern_properties = schema.get('patternProperties', dict())
 
-        for key, val in schema.get('properties', dict()).items():
+        for key, val in list(schema.get('properties', dict()).items()):
             pattern = val.get('asPatternProperty', None)
             if pattern is not None:
                 pattern_properties[pattern] = val

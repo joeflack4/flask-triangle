@@ -45,7 +45,7 @@ class Multiple(Modifier):
                     del items[k]
 
             # delete migrated values
-            for k in schema.keys():
+            for k in list(schema.keys()):
                 if k in items:
                     del schema[k]
 

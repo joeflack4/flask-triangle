@@ -12,7 +12,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from flask_triangle import Form
-from flask_triangle.widgets.core import TextInput
+from flask_triangle.widgets.standard import TextInput
 from nose.tools import assert_equal, assert_in
 
 
