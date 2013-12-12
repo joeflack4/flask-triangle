@@ -19,6 +19,6 @@ class NoSchema(Modifier):
 
     def alter_schema(self, schema, fqn):
 
-        for k in schema.keys():
+        for k in list(schema.keys()):
             del schema[k]
         return True

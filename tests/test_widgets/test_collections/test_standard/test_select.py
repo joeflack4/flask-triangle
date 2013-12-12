@@ -18,7 +18,7 @@ from flask_triangle.widgets.standard import Select
 from nose.tools import assert_equal
 from tests import cvr
 
-class TestTextInput(object):
+class TestSelectInput(object):
 
     def setup(self):
         self.app = flask.Flask(__name__)

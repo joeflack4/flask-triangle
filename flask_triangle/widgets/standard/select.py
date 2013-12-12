@@ -40,8 +40,8 @@ class Select(Widget):
     def render_options(self):
         res = ''
         if self.options is not None:
-            options = sorted([option + (None, None)[0:3-len(option)]
-                             for option in self.options], key=lambda x: x[2])
+            options = sorted([list(option) + [None, None][0:3-len(option)]
+                             for option in self.options], key=lambda x: x[2] or '')
 
             current_group = None
             for title, value, group in options:

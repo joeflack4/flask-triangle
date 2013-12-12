@@ -28,16 +28,18 @@ class FormBase(type):
 
         super_new = super(FormBase, mcs).__new__
 
-        if name == 'NewBase' and attrs == {}:
+        if name == '_base_form' and attrs == {}:
             return super_new(mcs, name, bases, attrs)
+
+
         parents = [b for b in bases if isinstance(b, FormBase) and
-                   not (b.__name__ == 'NewBase' and b.__mro__ == (b, object))]
+                   not (b.__name__ == '_base_form' and b.__mro__ == (b, object))]
+
         if not parents:
             return super_new(mcs, name, bases, attrs)
 
         module = attrs.pop('__module__')
         new_class = super_new(mcs, name, bases, {'__module__': module})
-
         new_class._form_widget_list = copy.deepcopy(new_class._form_widget_list)
 
         new_widgets = list()
@@ -63,13 +65,13 @@ class FormBase(type):
 
         return new_class
 
-
-class Form(object):
+# Python 2 and 3 compatibility for the metaclass
+_base_form = FormBase('_base_form', (object, ), {})
+class Form(_base_form):
     """
     The Form acts as a container for multiple Widgets.
     """
 
-    __metaclass__ = FormBase
     _form_widget_list = list()
 
     def __init__(self, name, schema=None, strict=True, root=None):

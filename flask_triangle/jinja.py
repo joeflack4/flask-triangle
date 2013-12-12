@@ -58,7 +58,7 @@ def angular_filter(value):
     if is_undefined(value):
         return '{{{{{}}}}}'.format(value._undefined_name)
     if type(value) is bool:
-        value = unicode(value).lower()
+        value = repr(value).lower()
     return '{{{{{}}}}}'.format(value)
 
 

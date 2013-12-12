@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 
 
 from flask_triangle import Widget
+from flask_triangle.helpers import PY3
 
 from jsonschema import Draft3Validator
 from nose.tools import assert_equal, assert_not_in, assert_in
@@ -21,6 +22,9 @@ class SimpleCustomWidget(Widget):
 
     html_template = '<tag {{widget.html_attributes}}></tag>'
     schema = {'type': 'string'}
+
+if PY3:
+    unicode = str
 
 
 class TestRendering(object):
@@ -46,7 +50,7 @@ class TestSchema0(object):
         """
         The "leaf" of the schema is equal to the schema attribute of the class.
         """
-        for k, v in SimpleCustomWidget.schema.iteritems():
+        for k, v in SimpleCustomWidget.schema.items():
             assert_equal(self.widget.schema['properties']['test'][k], v)
 
 
@@ -76,5 +80,5 @@ class TestSchema1(object):
         root = self.widget.schema
         for level in self.widget.bind.split('.'):
             root = root['properties'][level]
-        for k, v in SimpleCustomWidget.schema.iteritems():
+        for k, v in SimpleCustomWidget.schema.items():
             assert_equal(root[k], v)

@@ -47,7 +47,7 @@ class Schema(dict):
 
         pattern_properties = schema.get('patternProperties', dict())
 
-        for key, val in schema.get('properties', dict()).items():
+        for key, val in list(schema.get('properties', dict()).items()):
             pattern = val.get('asPatternProperty', None)
             if pattern is not None:
                 pattern_properties[pattern] = val
@@ -75,7 +75,7 @@ class Schema(dict):
         """
         The effective implementation of the merge with a recursive method.
         """
-        for key, val in u.iteritems():
+        for key, val in u.items():
             if isinstance(val, collections.Mapping) and \
                 isinstance(d.get(key, None), collections.Mapping):
                 d[key] = Schema.__merge(d.get(key, {}), val)

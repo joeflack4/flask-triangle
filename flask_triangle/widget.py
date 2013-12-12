@@ -15,11 +15,11 @@ from __future__ import unicode_literals
 
 import re, inspect
 from jinja2 import Template
-from flask_triangle.helpers import UnicodeMixin, HTMLString
+from flask_triangle.helpers import PY3, HTMLString
 from flask_triangle.schema import Schema
 
 
-class HtmlAttr(dict, UnicodeMixin):
+class HtmlAttr(dict):
     """
     Implements an object to manage and render attributes of an HTML element.
 
@@ -51,9 +51,12 @@ class HtmlAttr(dict, UnicodeMixin):
         string = '"{}"'
 
         if type(value) is bool:
-            return string.format(unicode(value).lower())
+            return string.format(repr(value).lower())
 
-        value = unicode(value)
+        if PY3:
+            value = str(value)
+        else:
+            value = unicode(value)
 
         if value.endswith('|angular'):
             value = value[:-8]
@@ -83,8 +86,11 @@ class HtmlAttr(dict, UnicodeMixin):
         """
         Return all the attributes of a string.
         """
-        unique = dict((self._get_name(k), v) for k, v in self.iteritems())
+        unique = dict((self._get_name(k), v) for k, v in self.items())
         return ' '.join(self._to_attr(k, v) for k, v in sorted(unique.items()))
+
+    def __str__(self):
+        return self.__unicode__()
 
 
 class Widget(object):
@@ -288,7 +294,7 @@ class Widget(object):
                 if not args:
                     customize(self)
                 else:
-                    local_kwargs = dict((k, v) for k, v in kwargs.iteritems()
+                    local_kwargs = dict((k, v) for k, v in kwargs.items()
                                                 if k in args)
                     customize(self, **local_kwargs)
         # start the recursion

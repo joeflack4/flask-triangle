@@ -14,8 +14,13 @@ from __future__ import unicode_literals
 import flask
 
 from flask_triangle import Triangle
+from flask_triangle.helpers import PY3
 from flask_triangle.widget import HtmlAttr
 from nose.tools import assert_true, assert_equal, assert_false
+
+
+if PY3:
+    unicode = str
 
 
 class TestAttributes0(object):

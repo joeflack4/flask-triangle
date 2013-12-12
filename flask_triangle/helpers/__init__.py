@@ -8,7 +8,7 @@
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
-from .python3 import UnicodeMixin
+from .python3 import PY3
 from .html import HTMLString
 
-__all__ = ['UnicodeMixin', 'HTMLString']
+__all__ = ['PY3', 'HTMLString']

@@ -10,21 +10,19 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from . import PY3
 
-import sys
 
-
-# compatibility with python 2.x and 3.x
-if sys.version_info > (3, 0):
-    base = str
-else:
+# Python3 support.
+base = str
+if not PY3:
     base = unicode
 
 
 class HTMLString(base):
     """
-    The HTMLString object is a standard string ehanced with an __html__ method.
-    It's content will render as is in the template.
+    HTMLString is a special string object with an __html__ method used by Jinja2
+    to render the text as safe HTML code.
     """
 
     def __html__(self):
