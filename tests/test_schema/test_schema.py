@@ -8,258 +8,337 @@
 """
 
 
-from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask_triangle.schema import Schema
+from __future__ import unicode_literals
 
-from nose.tools import assert_true, assert_equal, assert_in, assert_not_in
-import mock
+import jsonschema
+from nose.tools import (assert_not_in, assert_in, assert_equal, assert_true,
+                        raises)
+
+from flask_triangle.exc import MergeError
+from flask_triangle.schema import Schema, Object, String
+
+
+class TestSchemaType(object):
+    """
+    Test the object hierarchy of Schema / Object
+    """
+
+    def test_subclass(self):
+        """
+        A Schema is a subclass of the Object class.
+        """
+        assert_true(issubclass(Schema, Object))
+
+    def test_schema_title(self):
+        """
+        The schema has a specific title property.
+        """
+        assert_equal('ok', Schema(title='ok').schema['title'])
+
+    def test_schema_description(self):
+        """
+        The schema has a specific title property.
+        """
+        assert_equal('ok', Schema(description='ok').schema['description'])
 
 
 class TestSchema0(object):
+    """
+    Test the validity and the features of a schema.
+    """
 
     def setup(self):
-        pass
+        self.root = Schema(title='test', description='A test schema.')
 
-    def test_type(self):
-        """Schema is a dict"""
-        assert_true(issubclass(Schema, dict))
+    def test_empty(self):
+        """
+        An empty schema is valid.
+        """
+        jsonschema.Draft4Validator.check_schema(self.root.schema)
 
-    def test_init0(self):
-        """The default schema is an empty dict"""
-        assert_equal(len(Schema()), 0)
+    def test_update(self):
+        """
+        The schema is computed at the runtime and is mutable.
+        """
+        assert_not_in('required', self.root.schema)
+        self.root.required.append('test')   # add test to the required fields
+        assert_in('test', self.root.schema['required'])
 
-    def test_init1(self):
-        """A Schema can be initialized with an existing dict"""
-        schema = Schema({'test': 'ok'})
-        assert_equal(len(schema), 1)
-        assert_in('test', schema)
-        assert_equal(schema['test'], 'ok')
+    def test_cache_set(self):
+        """
+        The schema can be cached.
+        """
+        assert_not_in('required', self.root.schema)
+        self.root.cache()
+        self.root.required.append('test')
+        assert_not_in('required', self.root.schema)
+
+    def test_cache_unset(self):
+        """
+        The cache can be unset.
+        """
+        assert_not_in('required', self.root.schema)
+        self.root.cache()
+        self.root.required.append('test')
+        self.root.cache(False)
+        assert_in('test', self.root.schema['required'])
+
+    def test_override_schema(self):
+        """
+        The computed schema can be overridden with a custom schema.
+        """
+        assert_not_in('properties', self.root.schema)
+        self.root.schema = {'type': 'object',
+                            'properties': {'custom': {'type': 'boolean'}}}
+        assert_in('properties', self.root.schema)
+
+    def test_add_property0(self):
+        """
+        Add a property.
+        """
+        self.root.properties.add('toto', Object())
+        assert_in('toto', self.root.properties)
+
+    def test_add_property1(self):
+        """
+        The schema is valid when a property is added.
+        """
+        self.root.properties.add('toto', Object())
+        jsonschema.Draft4Validator.check_schema(self.root.schema)
+
+    def test_add_pattern_property0(self):
+        """
+        Add a property.
+        """
+        self.root.pattern_properties.add('^test$', Object())
+        assert_in('^test$', self.root.pattern_properties)
+
+    def test_add_pattern_property1(self):
+        """
+        The schema is valid when a property is added.
+        """
+        self.root.pattern_properties.add('^test$', Object())
+        jsonschema.Draft4Validator.check_schema(self.root.schema)
 
 
 class TestSchema1(object):
+    """
+    Test the validation of data.
+    """
 
     def setup(self):
-        """call a function on each subschema."""
+        self.root = Schema(title='test', description='A test schema.')
 
-        self.func_nobreak = mock.Mock(return_value=False)
-        self.func_break = mock.Mock(return_value=True)
-
-    def test_apply_func0(self):
-        """the applied func is called on the root and each properties"""
-        schema = Schema({'type': 'object',
-                          'properties': {'first': Schema({'type': 'string'}),
-                                          'last': Schema({'type': 'string'})}})
-
-        schema.apply_func(self.func_nobreak)
-
-        expected = [mock.call(schema, ''),
-                    mock.call(schema['properties']['last'], 'last'),
-                    mock.call(schema['properties']['first'], 'first')]
-        assert_equal(self.func_nobreak.call_args_list, expected)
-
-    def test_apply_func1(self):
+    def test_accept_all(self):
         """
-        the applied func is called on the root only if the function breaks the
-        process by returning a non-false value.
+        Successful validation raises no error.
         """
-        schema = Schema({'type': 'object',
-                          'properties': {'first': Schema({'type': 'string'}),
-                                          'last': Schema({'type': 'string'})}})
+        self.root.validate({'test': 'ok'})
 
-        schema.apply_func(self.func_break)
-
-        expected = [mock.call(schema, '')]
-        assert_equal(self.func_break.call_args_list, expected)
-
-    def test_apply_func2(self):
+    @raises(jsonschema.ValidationError)
+    def test_accept_none0(self):
         """
-        the applied func is called on nested properties.
+        Should raise a ValidationError.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'parent': Schema({'type': 'object',
-                                                            'properties': {'child': Schema({'type': 'string'})}})}})
+        self.root.additional_properties = False # The root object does not have
+                                                # any properties.
+        self.root.validate({'test': 'fail'})
 
-        schema.apply_func(self.func_nobreak)
-
-        expected = [mock.call(schema, ''),
-                    mock.call(schema['properties']['parent'], 'parent'),
-                    mock.call(schema['properties']['parent']['properties']['child'], 'parent.child')]
-        assert_equal(self.func_nobreak.call_args_list, expected)
-
-    def test_apply_func3(self):
+    def test_accept_none1(self):
         """
-        the applied func is called for pattern proterties but use a '*' token.
+        Should not raise a Validation error if the json object if empty.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'named': Schema({'type': 'string'})},
-                         'patternProperties': {'^(/[^/]+)+$': Schema({'type': 'string'})}})
+        self.root.additional_properties = False
+        self.root.validate({})
 
-        schema.apply_func(self.func_nobreak)
+    @raises(jsonschema.ValidationError)
+    def test_required0(self):
+        """
+        Should fail if the required property is missing.
+        """
+        self.root.required.append('test')
+        self.root.validate({'other': 'fail'})
 
-        expected = [mock.call(schema, ''),
-                    mock.call(schema['properties']['named'], 'named'),
-                    mock.call(schema['patternProperties']['^(/[^/]+)+$'], '*')]
-        assert_equal(self.func_nobreak.call_args_list, expected)
+    def test_required1(self):
+        """
+        Should not fail if the required property is present.
+        """
+        self.root.required.append('test')
+        self.root.validate({'test': 'ok'})
+
+    @raises(jsonschema.ValidationError)
+    def test_patternprop0(self):
+        """
+        Should raise an error if the pattern property is missing.
+        """
+        self.root.pattern_properties.add('^test$', Object())
+        self.root.additional_properties = False
+        self.root.required.append('test')
+        self.root.validate({'fail': {}})
+
+    def test_patternprop1(self):
+        """
+        Should succeed if the pattern property (and only it) is present.
+        """
+        self.root.pattern_properties.add('^test$', Object())
+        self.root.additional_properties = False
+        self.root.required.append('test')
+        self.root.validate({'test': {}})
 
 
 class TestSchema2(object):
+    """
+    Test the merging of the object.
+    """
 
-    def test_0(self):
+    def test_merge0(self):
         """
-        A property with a 'asPatternProperty' key convert a named property to
-        a pattenProperty using the value of 'asPatternProperty' as pattern. 
-        This property is removed from the patternProperty
+        The merged object should append its properties in the first.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'normal': Schema({'type': 'string'}),
-                                         'pattern': Schema({'type': 'string',
-                                                             'asPatternProperty': '^(/[^/]+)+$'})}})
+        a = Schema()
+        a.properties.add('first', Object())
+        b = Schema()
+        b.properties.add('second', Object())
+        a.merge(b)
 
-        schema.compile()
-        assert_not_in('pattern', schema['properties'])
-        assert_not_in('pattern', schema['patternProperties'])
-        assert_in('^(/[^/]+)+$', schema['patternProperties'])
-        assert_not_in('asPatternProperty', schema['patternProperties']['^(/[^/]+)+$'])
+        assert_in('first', a.properties)
+        assert_in('second', a.properties)
 
-    def test_1(self):
+    def test_merge1(self):
         """
-        If the property was in the required list before being moved to
-        patternProperties, its name is removed.
+        The merge propagate through nested object.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'normal': Schema({'type': 'string'}),
-                                         'pattern': Schema({'type': 'string',
-                                                             'asPatternProperty': '^(/[^/]+)+$'})},
-                         'required': ['pattern', 'normal']})
+        a = Schema()
+        a.properties.add('nested', Object())
+        a.properties['nested'].properties.add('first', Object())
 
-        schema.compile()
-        assert_not_in('pattern', schema['required'])
+        b = Schema()
+        b.properties.add('nested', Object())
+        b.properties['nested'].properties.add('second', Object())
 
-    def test_2(self):
+        a.merge(b)
+
+        assert_in('first', a.properties['nested'].properties)
+        assert_in('second', a.properties['nested'].properties)
+
+    def test_merge2(self):
         """
-        If the required list is empty after the removal of value, the required
-        field is also removed.
+        The merge act as an update if two properties with the same name aren't
+        containers.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'normal': Schema({'type': 'string'}),
-                                         'pattern': Schema({'type': 'string',
-                                                             'asPatternProperty': '^(/[^/]+)+$'})},
-                         'required': ['pattern']})
+        a = Schema()
+        a.properties.add('test', Object())
+        b = Schema()
+        b.properties.add('test', String())
+        a.merge(b)
 
-        schema.compile()
-        assert_not_in('required', schema)
+        assert_equal('string', a.properties['test'].type)
 
-    def test_3(self):
+    def test_merge3(self):
         """
-        If there is no more properties in the obhect, this field is removed.
+        The merge act as an update if two properties with the same name aren't
+        containers.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'pattern': Schema({'type': 'string',
-                                                             'asPatternProperty': '^(/[^/]+)+$'})}})
+        a = Schema()
+        a.properties.add('test', String())
+        b = Schema()
+        b.properties.add('test', Object())
+        a.merge(b)
 
-        schema.compile()
-        assert_not_in('properties', schema)
+        assert_equal('object', a.properties['test'].type)
 
-    def test_4(self):
+    def test_merge4(self):
         """
-        If there is already patterProperties the list is appended.
+        The merge will update the required list by merging it if necessary.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'pattern': Schema({'type': 'string',
-                                                             'asPatternProperty': '^(/[^/]+)+$'})},
-                         'patternProperties': {'^[A-Z]*$': Schema({'type': 'string'})}})
+        a = Schema()
+        a.properties.add('first', Object())
+        a.required.append('first')
+        b = Schema()
+        b.properties.add('second', Object())
+        b.required.append('second')
+        a.merge(b)
 
-        assert_equal(len(schema['patternProperties']), 1)
-        schema.compile()
-        assert_equal(len(schema['patternProperties']), 2)
+        assert_in('first', a.required)
+        assert_in('second', a.required)
 
-
-class TestSchema3(object):
-
-    def setup(self):
-
-        self.schema = Schema({'a': 5,
-                              'b': 6,
-                              'c': [0, 1, 2, 3],
-                              'd': {'a': 5,
-                                    'b': 6,
-                                    'c': [0, 1, 2, 3]}})
-
-    def test_0(self):
-        """Merging two Schemas with no intersection complete the first one."""
-
-        self.schema.merge(Schema({'e': 10}))
-        assert_equal(len(self.schema), 5)
-        assert_in('e', self.schema)
-
-    def test_1(self):
+    def test_merge5(self):
         """
-        Merging two Schemas with an intersection on a key will update this key
-        if the key is not a mapping or a list.
+        No duplicate fields in the required.
         """
+        a = Schema()
+        a.properties.add('test', String())
+        a.required.append('test')
+        b = Schema()
+        b.properties.add('test', Object())
+        b.required.append('test')
+        a.merge(b)
 
-        self.schema.merge(Schema({'b': 10}))
-        assert_equal(len(self.schema), 4)
-        assert_equal(self.schema['b'], 10)
+        assert_equal(len(a.required), 1)
 
-    def test_2(self):
-        """
-        Merging two Schemas with an intersection on a key will update this key
-        if the associated values are not of the same kind.
-        """
 
-        self.schema.merge(Schema({'c': 10}))
-        assert_equal(len(self.schema), 4)
-        assert_equal(self.schema['c'], 10)
+    def test_merge6(self):
+        """
+        The merged object should append its properties in the first.
+        """
+        a = Schema()
+        a.pattern_properties.add('first', Object())
+        b = Schema()
+        b.pattern_properties.add('second', Object())
+        a.merge(b)
 
-    def test_3(self):
-        """
-        Merging two Schemas with an intersection on a key and both of the value
-        are of list type will merge them together.
-        """
+        assert_in('first', a.pattern_properties)
+        assert_in('second', a.pattern_properties)
 
-        self.schema.merge(Schema({'c': [10]}))
-        assert_equal(len(self.schema), 4)
-        assert_equal(sorted(self.schema['c']), [0, 1, 2, 3, 10])
+    def test_merge7(self):
+        """
+        The merge propagate through nested object.
+        """
+        a = Schema()
+        a.pattern_properties.add('nested', Object())
+        a.pattern_properties['nested'].properties.add('first', Object())
 
-    def test_4(self):
-        """
-        Merging two Schemas with an intersection on a key and both of the value
-        are of list type will merge them together but will drop duplicate.
-        """
+        b = Schema()
+        b.pattern_properties.add('nested', Object())
+        b.pattern_properties['nested'].properties.add('second', Object())
 
-        self.schema.merge(Schema({'c': [3]}))
-        assert_equal(len(self.schema), 4)
-        assert_equal(sorted(self.schema['c']), [0, 1, 2, 3])
+        a.merge(b)
 
-    def test_5(self):
-        """
-        The merge method is recursive when both key are mapping collections
-        """
-        #TODO: despite it works, I must found a way to really test the
-        #      recursive method implied in the merging process.
-        self.schema.merge(Schema({'d': {'e': 10}}))
-        assert True
+        assert_in('first', a.pattern_properties['nested'].properties)
+        assert_in('second', a.pattern_properties['nested'].properties)
 
-    def test_6(self):
+    def test_merge8(self):
         """
-        Merging a schema with None does not modify the first one
+        The merge act as an update if two properties with the same name aren't
+        containers.
         """
-        self.schema.merge(None)
-        assert_equal(len(self.schema), 4)
+        a = Schema()
+        a.pattern_properties.add('test', Object())
+        b = Schema()
+        b.pattern_properties.add('test', String())
+        a.merge(b)
 
-    def test_7(self):
-        """
-        If the recipient schema (A) get a subschema (B) from a merge with
-        another schema (C), any modifications of B in A will have no effect
-        on B in C (and vice-versa).
-        """
+        assert_equal('string', a.pattern_properties['test'].type)
 
-        recipient = Schema()
-        recipient.merge(self.schema)
-        recipient['d']['a'] = 10
-        self.schema['d']['a'] = 8
+    def test_merge9(self):
+        """
+        The merge act as an update if two properties with the same name aren't
+        containers.
+        """
+        a = Schema()
+        a.pattern_properties.add('test', String())
+        b = Schema()
+        b.pattern_properties.add('test', Object())
+        a.merge(b)
 
-        assert_equal(self.schema['d']['a'], 8)
-        assert_equal(recipient['d']['a'], 10)
+        assert_equal('object', a.pattern_properties['test'].type)
+
+    @raises(MergeError)
+    def test_merge_error(self):
+        """
+        A container cannot be merged with a non container object.
+        """
+        a = Schema()
+        b = String()
+        a.merge(b)
