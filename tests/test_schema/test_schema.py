@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 
 import jsonschema
 from nose.tools import (assert_not_in, assert_in, assert_equal, assert_true,
-                        raises)
+                        assert_is, raises)
 
 from flask_triangle.exc import MergeError
 from flask_triangle.schema import Schema, Object, String
@@ -342,3 +342,80 @@ class TestSchema2(object):
         a = Schema()
         b = String()
         a.merge(b)
+
+class TestSchema3(object):
+    """
+    test additional attributes of an object
+    """
+
+    def test_min_properties(self):
+        root = Schema(min_properties=1)
+        assert_in('minProperties', root.schema)
+        assert_equal(root.schema['minProperties'], 1)
+
+    def test_max_properties(self):
+        root = Schema(max_properties=1)
+        assert_in('maxProperties', root.schema)
+        assert_equal(root.schema['maxProperties'], 1)
+
+class TestSchemaPropertyAcces(object):
+    """
+    test the children access
+    """
+
+    def test_get_simple(self):
+        """
+        get('test') should return the property named 'test'.
+        """
+        target = String()
+        a = Schema()
+        a.properties.add('test', target)
+
+        assert_is(a.get('test'), target)
+
+    def test_get_none(self):
+        """
+        get('missing_property') should return `None`.
+        """
+        a = Schema()
+        assert_is(a.get('missing_property'), None)
+
+    def test_get_nested(self):
+        """
+        get('nested.test') should return the property 'test' in the child object
+        'nested'.
+        """
+        a = Schema()
+        target = String()
+        nested = Object()
+
+        nested.properties.add('test', target)
+        a.properties.add('nested', nested)
+
+        assert_is(a.get('nested.test'), target)
+
+    def test_get_erroneous0(self):
+        """
+        get('nested.') should return `None`
+        """
+        a = Schema()
+        target = String()
+        nested = Object()
+
+        nested.properties.add('test', target)
+        a.properties.add('nested', nested)
+
+        assert_is(a.get('nested.'), None)
+
+    def test_get_erroneous1(self):
+        """
+        get('.nested.test') should return `None`
+        """
+        a = Schema()
+        target = String()
+        nested = Object()
+
+        nested.properties.add('test', target)
+        a.properties.add('nested', nested)
+
+        assert_is(a.get('.nested.test'), None)

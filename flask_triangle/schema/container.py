@@ -88,6 +88,19 @@ class Object(BaseType):
         # reset the schema
         self.schema = None
 
+    def get(self, name):
+        """
+        Return the property `name`.
+        If the property does not exist, this method return `None`.
+        """
+        name += '.' # hack to always unpack two values
+        local, child = name.split('.', 1)
+
+        res = self.properties.get(local)
+        if child and res is not None:   # if there is a child
+            return res.get(child[:-1])  # remove the appended dot
+        return res
+
     def __schema__(self):
 
         res = super(Object, self).__schema__()
