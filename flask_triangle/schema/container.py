@@ -41,7 +41,7 @@ class Object(BaseType):
     properties and
     """
 
-    def __init__(self, max_properties=None, min_properties=None, required=None,
+    def __init__(self, min_properties=0, max_properties=None, required=None,
                  additional_properties=True, **kwargs):
 
         super(Object, self).__init__('object', **kwargs)
@@ -115,10 +115,10 @@ class Object(BaseType):
 
         if len(self.required): res['required'] = list(set(self.required))
 
+        if self.min_properties:
+            res['minProperties'] = self.min_properties
         if self.max_properties is not None:
             res['maxProperties'] = self.max_properties
-        if self.min_properties is not None:
-            res['minProperties'] = self.min_properties
         if self.additional_properties is not True:
             res['additionalProperties'] = self.additional_properties
         if len(self.properties):

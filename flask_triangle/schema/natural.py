@@ -31,10 +31,8 @@ class Numeric(BaseType):
     """
     """
 
-    def __init__(self, type_, multiple_of=None,
-                 maximum=None, exclusive_maximum=False,
-                 minimum=None, exclusive_minimum=False,
-                 **kwargs):
+    def __init__(self, type_, multiple_of=None, minimum=None, maximum=None,
+                 exclusive_maximum=False, exclusive_minimum=False, **kwargs):
         super(Numeric, self).__init__(type_, **kwargs)
         self.multiple_of = multiple_of
         self.maximum = maximum
@@ -82,11 +80,10 @@ class String(BaseType):
     """
     """
 
-    def __init__(self, max_length=None, min_length=None, pattern=None,
-                 **kwargs):
+    def __init__(self, min_length=0, max_length=None, pattern=None, **kwargs):
         super(String, self).__init__('string', **kwargs)
-        self.max_length = max_length
         self.min_length = min_length
+        self.max_length = max_length
         self.pattern = pattern
 
     def __schema__(self):
@@ -96,8 +93,8 @@ class String(BaseType):
 
         res = super(String, self).__schema__()
 
+        if self.min_length: res['minLength'] = self.min_length
         if self.max_length is not None: res['maxLength'] = self.max_length
-        if self.min_length is not None: res['minLength'] = self.min_length
         if self.pattern is not None: res['pattern'] = self.pattern
 
         return res
