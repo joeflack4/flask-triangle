@@ -11,15 +11,11 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import jsonschema
 from .base import SanityCheck, CheckBaseProperties, CheckCacheMechanism
 from .container import CheckContainerProperties, CheckDataValidation, \
                        CheckMerging, CheckPropertyAccess
-
 from flask_triangle.schema import Object
 
-
-### Test common features of any item
 
 class TestSchema(SanityCheck, CheckBaseProperties, CheckCacheMechanism):
     """
@@ -46,11 +42,3 @@ class TestObjectMerging(CheckMerging):
     def setup(self):
         self.a = Object()
         self.b = Object()
-
-'''
-
-
-
-
-
-'''
