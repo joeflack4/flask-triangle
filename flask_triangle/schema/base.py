@@ -19,15 +19,30 @@ class BaseType(object):
     def __init__(self, type_,
                  enum=None, all_of=None, any_of=None, one_of=None, is_not=None):
 
-        # This will override the computed schema if not None
-        self._custom_schema = None
+        self._custom_schema = None  # see schema() property for more information
 
-        self.type = type_
-        self.enum = enum
-        self.all_of = all_of
-        self.any_of = any_of
-        self.one_of = one_of
+        self._type = type_
         self.is_not = is_not
+
+        if all_of is None:
+            self.all_of = []
+        else:
+            self.all_of = all_of
+
+        if any_of is None:
+            self.any_of = []
+        else:
+            self.any_of = any_of
+
+        if one_of is None:
+            self.one_of = []
+        else:
+            self.one_of = one_of
+
+        if enum is None:
+            self.enum = []
+        else:
+            self.enum = enum
 
     @property
     def schema(self):
@@ -62,12 +77,13 @@ class BaseType(object):
         Generate the JSON schema.
         """
 
-        res = {'type': self.type}
+        res = {'type': self._type}
 
-        if self.enum is not None: res['enum'] = self.enum
-        if self.all_of is not None: res['allOf'] = self.all_of
-        if self.any_of is not None: res['anyOf'] = self.any_of
-        if self.one_of is not None: res['oneOf'] = self.any_of
-        if self.is_not is not None: res['not'] = self.is_not
+        if len(self.enum): res['enum'] = self.enum
+        if len(self.all_of): res['allOf'] = [i.schema for i in self.all_of]
+        if len(self.any_of): res['anyOf'] = [i.schema for i in self.any_of]
+        if len(self.one_of): res['oneOf'] = [i.schema for i in self.one_of]
+
+        if self.is_not is not None: res['not'] = self.is_not.schema
 
         return res

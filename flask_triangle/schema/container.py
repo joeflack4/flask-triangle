@@ -21,6 +21,7 @@ import copy, jsonschema
 from .base import BaseType
 from ..exc import MergeError
 
+
 class PropertyCollection(dict):
     """
     An internal class to enhance the default dict with advanced features such
@@ -60,7 +61,7 @@ class Object(BaseType):
 
     def merge(self, other):
         """
-        Merge a schema in this one.
+        Merge another schema in this one.
         """
         if not issubclass(type(other), Object):
             raise MergeError('Only container objects can be merged together.')
@@ -101,6 +102,13 @@ class Object(BaseType):
             return res.get(child[:-1])  # remove the appended dot
         return res
 
+
+    def validate(self, json):
+        """
+        Validate the `json` against the current JSON Schema.
+        """
+        jsonschema.validate(json, self.schema)
+
     def __schema__(self):
 
         res = super(Object, self).__schema__()
@@ -132,12 +140,6 @@ class Schema(Object):
         super(Schema, self).__init__(**kwargs)
         self.title = title
         self.description = description
-
-    def validate(self, json):
-        """
-        Validate the `json` against the current JSON Schema.
-        """
-        jsonschema.validate(json, self.schema)
 
     def __schema__(self):
 

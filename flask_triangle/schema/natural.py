@@ -85,6 +85,9 @@ class String(BaseType):
     def __init__(self, max_length=None, min_length=None, pattern=None,
                  **kwargs):
         super(String, self).__init__('string', **kwargs)
+        self.max_length = max_length
+        self.min_length = min_length
+        self.pattern = pattern
 
     def __schema__(self):
         """
