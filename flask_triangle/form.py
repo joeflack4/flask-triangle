@@ -15,7 +15,7 @@ from __future__ import absolute_import
 import copy
 import flask
 
-from .widget import Widget
+from .widgets import Widget
 from .schema import Schema
 from .triangle import json_validate
 from .helpers import HTMLString
