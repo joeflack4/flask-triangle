@@ -15,6 +15,7 @@ from __future__ import unicode_literals
 
 import jinja2
 from flask_triangle.helpers import HTMLString, camel_to_dash, make_attr
+from flask_triangle.schema import Schema, Object
 
 
 class Widget(object):
@@ -93,6 +94,21 @@ class Widget(object):
 
         self._label = label # see the property for the behavior of the label
 
+        # Create the local schema
+        self.schema = Schema()
+        if name is not None and name:
+            self.schema.title = name
+
+        if self.__class__.schema is not None:
+            target = self.schema
+            for level in bind.split('.')[:-1]:
+                target.properties.add(level, Object())
+                target = target.properties[level]
+
+            target.properties.add(bind.rsplit('.', 1)[-1],
+                                  self.__class__.schema)
+
+        # Modify the default behaviour
         self.modifiers = []
         if modifiers is not None:
             self.modifiers += modifiers

@@ -11,7 +11,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import jsonschema
 from flask_triangle.schema import Schema
 
 from nose.tools import assert_in, assert_not_in, assert_equal, assert_is, raises
