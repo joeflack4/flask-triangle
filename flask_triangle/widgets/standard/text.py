@@ -15,91 +15,73 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from flask_triangle.widget import Widget
-import flask_triangle.modifiers
+from flask_triangle.widgets import Widget
+from flask_triangle.schema import String, Number
+from flask_triangle.schema.format import Email
 
 
 class Input(Widget):
     """
-    HTML input element control with angular data-binding. Input control follows
-    HTML5 input types and polyfills the HTML5 validation behavior for older
-    browsers.
+    The default input widget.
     """
-
-    schema = {'type': 'string'}
-
-    html_template = '<input {{widget.html_attributes}}></input>'
-
-    def __customize__(self, required=False, min_length=None, max_length=None,
-                      pattern=None, change=None):
-
-        if required is not False:
-            self.modifiers.append(flask_triangle.modifiers.Required(required))
-        if min_length is not None:
-            self.modifiers.append(flask_triangle.modifiers.MinimumLength(min_length))
-        if max_length is not None:
-            self.modifiers.append(flask_triangle.modifiers.MaximumLength(max_length))
-        if pattern is not None:
-            self.modifiers.append(flask_triangle.modifiers.Regexp(pattern))
-        if change is not None:
-            self.html_attributes['data-ng-change'] = change
+    schema = String()
+    html_template = '<input {{attr}}></input>'
 
 
 class TextInput(Input):
     """
-    Standard HTML text input with angular data binding.
     """
 
-    def __customize__(self, trim=True):
-        self.html_attributes['type'] = 'text'
+    def __init__(self, bind, name=None, label=None, modifiers=None,
+                 metadata=None, **kwargs):
 
-        if trim is not True and trim is not None:
-            self.html_attributes['data-ng-trim'] = trim
-
-
-class PasswordInput(Input):
-    """
-    Standard HTML password input with angular data binding.
-    """
-
-    def __customize__(self):
-        self.html_attributes['type'] = 'password'
-
-
-class EmailInput(Input):
-    """
-    Text input with email validation.
-    """
-
-    def __customize__(self, pattern=None):
-        self.html_attributes['type'] = 'email'
-
-        # the default server-side pattern is set only if no pattern is set by
-        # the user. The default Input __customize__ deals with the pattern
-        # property. 
-        if pattern is None:
-            val = Regexp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-.])*$',
-                         client=False)
-            self.modifiers.append(val)
-
-
-class NumberInput(Input):
-    """
-    Text input with number validation and transformation.
-    """
-
-    schema = {'type': 'number'}
-
-    def __customize__(self, min=None, max=None):
-        self.html_attributes['type'] = 'number'
-        if min is not None:
-            self.modifiers.append(flask_triangle.modifiers.Minimum(min))
-        if max is not None:
-            self.modifiers.append(flask_triangle.modifiers.Maximum(max))
+        kwargs['type'] = 'text'
+        super(TextInput, self).__init__(bind, name, label, modifiers, metadata,
+                                        **kwargs)
 
 
 class Textarea(Input):
     """
     HTML textarea element control with angular data-binding.
     """
-    html_template = '<textarea {{widget.html_attributes}}></textarea>'
+    html_template = '<textarea {{attr}}></textarea>'
+
+
+class PasswordInput(Input):
+    """
+    """
+
+    def __init__(self, bind, name=None, label=None, modifiers=None,
+                 metadata=None, **kwargs):
+
+        kwargs['type'] = 'password'
+        super(PasswordInput, self).__init__(bind, name, label, modifiers, metadata,
+                                            **kwargs)
+
+
+class EmailInput(Input):
+    """
+    """
+
+    schema = Email()
+
+    def __init__(self, bind, name=None, label=None, modifiers=None,
+                 metadata=None, **kwargs):
+
+        kwargs['type'] = 'email'
+        super(EmailInput, self).__init__(bind, name, label, modifiers, metadata,
+                                         **kwargs)
+
+
+class NumberInput(Input):
+    """
+    """
+
+    schema = Number()
+
+    def __init__(self, bind, name=None, label=None, modifiers=None,
+                 metadata=None, **kwargs):
+
+        kwargs['type'] = 'number'
+        super(NumberInput, self).__init__(bind, name, label, modifiers, metadata,
+                                          **kwargs)
