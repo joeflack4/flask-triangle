@@ -15,7 +15,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from jinja2 import evalcontextfilter, Undefined, is_undefined
-from .widget import Widget
+from .widgets import Widget
 
 
 class TriangleUndefined(Undefined):
@@ -49,7 +49,7 @@ class TriangleUndefined(Undefined):
 def angular_filter(value):
     """
     A filter to tell Jinja2 that a variable is for the AngularJS template
-    engine. 
+    engine.
 
     If the variable is undefined, its name will be used in the AngularJS
     template, otherwise, its content will be used.
