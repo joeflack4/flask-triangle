@@ -11,7 +11,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from flask_triangle.widget import Widget
+from flask_triangle.widgets.widget import Widget
 import flask_triangle.modifiers
 
 
@@ -20,28 +20,31 @@ class Select(Widget):
 
     schema = {'type': 'string'}
 
-    html_template = ('<select {{widget.html_attributes}}>'
+    html_template = ('<select {{attr}}>'
                      '{{widget.render_options()}}'
                      '</select>')
 
-    def __customize__(self, options, required=False, multiple=False):
-
-        if required is not False:
-            self.modifiers.append(flask_triangle.modifiers.Required(required))
-        if multiple:
-            self.modifiers.append(flask_triangle.modifiers.Multiple())
+    def __init__(self, bind, options, name=None, label=None, modifiers=None,
+                 metadata=None, **kwargs):
 
         if isinstance(options, list):
-            self.options = options
+            self._options = options
         else:
-            self.options = None
-            self.html_attributes['data-ng-options'] = options
+            self._options = None
+            kwargs['data-ng-options'] = options
+        super(Select, self).__init__(bind, name, label, modifiers, metadata,
+                                     **kwargs)
 
     def render_options(self):
+
         res = ''
-        if self.options is not None:
-            options = sorted([list(option) + [None, None][0:3-len(option)]
-                             for option in self.options], key=lambda x: x[2] or '')
+
+        if self._options is not None:
+            # create three-element tuples
+            options = sorted(
+                [list(option) + [None, None][0:3-len(option)] for option in self._options],
+                key=lambda x: x[2] or ''
+            )
 
             current_group = None
             for title, value, group in options:

@@ -15,7 +15,7 @@ from __future__ import unicode_literals
 
 from .text import (Input, TextInput, PasswordInput, EmailInput, Textarea,
                    NumberInput)
-
+from .select import Select
 
 __all__ = ['Input', 'TextInput', 'PasswordInput', 'EmailInput', 'Textarea',
-           'NumberInput']
+           'NumberInput', 'Select']

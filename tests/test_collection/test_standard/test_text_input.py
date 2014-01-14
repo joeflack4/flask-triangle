@@ -27,7 +27,6 @@ class CommonTest(object):
         """
         assert_true(re.match('<("[^"]*"|\'[^\']*\'|[^\'">])*>', self.widget()))
 
-
     def testExpectedHTML(self):
         """
         check if the HTML structure is the one expected.
