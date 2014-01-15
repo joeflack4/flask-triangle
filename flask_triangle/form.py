@@ -16,7 +16,7 @@ import copy
 import flask
 
 from .widgets import Widget
-from .schema import Schema
+from .schema import Schema, Object
 from .triangle import json_validate
 from .helpers import HTMLString
 
@@ -31,10 +31,8 @@ class FormBase(type):
         if name == '_base_form' and attrs == {}:
             return super_new(mcs, name, bases, attrs)
 
-
         parents = [b for b in bases if isinstance(b, FormBase) and
                    not (b.__name__ == '_base_form' and b.__mro__ == (b, object))]
-
         if not parents:
             return super_new(mcs, name, bases, attrs)
 
@@ -43,10 +41,10 @@ class FormBase(type):
         new_class._form_widget_list = copy.deepcopy(new_class._form_widget_list)
 
         new_widgets = list()
+
         for obj_name, obj in attrs.items():
             setattr(new_class, obj_name, obj)
             if isinstance(obj, Widget):
-
                 # use the attribute name as the widget's name
                 if obj.name is None:
                     obj.name = obj_name
@@ -60,7 +58,7 @@ class FormBase(type):
                 # attribute which was a widget, removes it from the list.
                 new_class._form_widget_list.remove(obj_name)
 
-        new_widgets.sort(key=lambda k: getattr(new_class, k).instance_counter)
+        new_widgets.sort(key=lambda k: getattr(new_class, k)._instance_counter)
         new_class._form_widget_list += new_widgets
 
         return new_class
@@ -69,7 +67,6 @@ class FormBase(type):
 _base_form = FormBase('_base_form', (object, ), {})
 class Form(_base_form):
     """
-    The Form acts as a container for multiple Widgets.
     """
 
     _form_widget_list = list()
@@ -83,19 +80,21 @@ class Form(_base_form):
         root of the JSON schema.
         """
 
+
         if schema is not None:
-            self.schema = Schema(schema)
+            self.schema = copy.deepcopy(schema)
         else:
-            self.schema = Schema()
-
+            self.schema = Schema(additional_properties=not(strict))
             for widget in self:
-                #print widget, widget.schema
                 self.schema.merge(widget.schema)
-
-        self.schema.compile(strict)
+            self.schema.title = name    # the merge overwrite the title if is
+                                        # set earlier.
+            for _, node in self.schema:
+                if issubclass(type(node), Object):
+                    node.additional_properties = not(strict)
 
         if root is not None:
-            self.schema = self.schema.get('properties').get(root, self.schema)
+            self.schema = self.schema.get(root)
 
         self.name = name
 
@@ -104,7 +103,7 @@ class Form(_base_form):
         """
         Return a function decorator to validate JSON in the current request.
         """
-        return json_validate(self.schema)
+        return json_validate(self.schema.schema)
 
     def __iter__(self):
         return (getattr(self, obj_name) for obj_name in self._form_widget_list)

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-    template
-    --------
+    test.forms.inheritance
+    ----------------------
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 from flask_triangle import Form
 from flask_triangle.widgets.standard import TextInput
 
-from nose.tools import assert_equal, assert_in
+from nose.tools import assert_equal
 
 
 class Original(Form):

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-    tests.forms
-    --------
+    tests.forms.default
+    -------------------
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -12,33 +12,42 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from flask_triangle import Form
+from flask_triangle.schema import Schema
 from flask_triangle.widgets.standard import TextInput
 from nose.tools import assert_equal, assert_in
 
 
-class TestFormCreation(object):
+class TestEmptyForm(object):
+    """
+    A serie of tests on the empty form behavior.
+    """
 
-    def setup(self):
-        pass
-
-    def test_form_name(self):
+    def test_form_name0(self):
         """A form has a name."""
         form = Form('test')
         assert_equal(form.name, 'test')
 
+    def test_form_name1(self):
+        """The form name is the title of the schema."""
+        form = Form('test')
+        assert_equal(form.schema.title, 'test')
+
     def test_form_default_schema(self):
         """A form has a default schema."""
         form = Form('test')
-        assert_equal(form.schema, {})
+        assert_equal(form.schema, Schema(title='test',
+                                         additional_properties=False))
 
     def test_custom_schema(self):
         """A form can have a custom schema."""
-        form = Form('test', schema={'custom': 'schema'})
-        assert_equal(form.schema, {'custom': 'schema'})
+        form = Form('test', Schema())
+        assert_equal(form.schema, Schema())
 
-# required for test
+
 class MyForm(Form):
-
+    """
+    A custom form for testing purpose.
+    """
     entry1 = TextInput('entry1')
     entry0 = TextInput('entry0')
 
@@ -51,13 +60,16 @@ class TestFormWithWidgets(object):
     def test_widget_direct_access(self):
         """A widget is accessible as an instance property of the object"""
         assert_equal(type(self.form.entry0), TextInput)
+        assert_equal(type(self.form.entry1), TextInput)
 
     def test_widget_default_name(self):
         """
         A widget without a default name uses the property holding it name as
         its name.
         """
+        a = self.form.entry0.name
         assert_equal(self.form.entry0.name, 'entry0')
+        assert_equal(self.form.entry1.name, 'entry1')
 
     def test_iterate(self):
         """
@@ -75,4 +87,3 @@ class TestFormWithWidgets(object):
         """
         assert_equal([widget.name for widget in self.form],
                      ['entry1', 'entry0'])
-
