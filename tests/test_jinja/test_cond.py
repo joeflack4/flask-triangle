@@ -13,7 +13,8 @@ from __future__ import unicode_literals
 
 
 import flask
-from flask_triangle import Triangle, Widget
+from flask_triangle import Triangle
+from flask_triangle.widgets import Widget
 
 from nose.tools import assert_equal
 
