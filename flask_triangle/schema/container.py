@@ -102,12 +102,25 @@ class Object(BaseType):
             return res.get(child[:-1])  # remove the appended dot
         return res
 
-
     def validate(self, json):
         """
         Validate the `json` against the current JSON Schema.
         """
         jsonschema.validate(json, self.schema)
+
+    def __iter__(self):
+
+        yield (None, self)
+        for k, p in self.properties.items():
+            if issubclass(type(p), Object):
+                for sk, sp in p:
+                    if sk is None:
+                        yield (k, sp)
+                    else:
+                        yield ('{}.{}'.format(k, sk), sp)
+            else:
+                yield (k, p)
+        return
 
     def __schema__(self):
 

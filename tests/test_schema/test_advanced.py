@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 """
-    test.schema.normal
-    ------------------
+    test.schema.advanced
+    --------------------
 
-    Normal condition testing.
+    Test advanced features of the json-schema.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -16,12 +16,12 @@ from __future__ import unicode_literals
 import jsonschema
 
 from nose.tools import assert_equal, assert_not_equal
-from flask_triangle.schema import Schema, String
+from flask_triangle.schema import Schema, Object, String
 
 
 class TestComparison(object):
     """
-    Execute all the base tests.
+    Execute all the base comparison tests.
     """
     def setup(self):
         self.schema0 = Schema()
@@ -42,3 +42,22 @@ class TestComparison(object):
         schema1.properties.add('value', String())
         schema1.properties.add('other', String())
         assert_not_equal(schema1, self.schema0)
+
+
+class TestIteration0(object):
+    """
+    Execute the iteration test.
+    """
+
+    def setup(self):
+        self.schema = Schema()
+        nested = Object()
+        nested.properties.add('value0', String())
+        nested.properties.add('value1', String())
+        self.schema.properties.add('nested', nested)
+        self.schema.properties.add('value2', String())
+
+    def test_iter_node(self):
+        assert_equal(len(list(self.schema)), 5)
+
+    #TODO: improve that !
