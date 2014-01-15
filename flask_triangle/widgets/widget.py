@@ -89,7 +89,6 @@ class Widget(object):
         self._html_attributes = dict(kwargs)
 
         self.bind = bind
-        self.name = name
         self.metadata = metadata
 
         self._label = label # see the property for the behavior of the label
@@ -98,6 +97,7 @@ class Widget(object):
         self.schema = Schema()
         if name is not None and name:
             self.schema.title = name
+            self._html_attributes['name'] = name
 
         if self.__class__.schema is not None:
             target = self.schema
@@ -118,7 +118,7 @@ class Widget(object):
 
         # name and id have custom managment
         if name in ['name', 'id']:
-            self._html_attributes.get(name, None)
+            return self._html_attributes.get(name, None)
 
         if name not in self._html_attributes:
             raise AttributeError
