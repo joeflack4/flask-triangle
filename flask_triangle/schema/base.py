@@ -13,6 +13,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import json
+
 
 class BaseType(object):
 
@@ -71,6 +73,18 @@ class BaseType(object):
             self._custom_schema = self.__schema__()
         else:
             self._custom_schema = None
+
+    def __repr__(self):
+        """
+        A JSON representation of the schema based on its dict representation.
+        """
+        return json.dumps(self.__schema__(), sort_keys=True, indent=4)
+
+    def __hash__(self):
+        return hashlib.sha1(repr(self))
+
+    def __eq__(self, other):
+        return issubclass(type(other), BaseType) and repr(self) == repr(other)
 
     def __schema__(self):
         """
