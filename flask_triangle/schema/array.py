@@ -25,13 +25,17 @@ class Array(BaseType):
         self.items = items
         self.min_items=min_items
         self.max_items=max_items
-        self.unique_items=False
+        self.unique_items=unique_items
 
     def __schema__(self):
 
         res = super(Array, self).__schema__()
 
-        res['items'] = self.items
+        if issubclass(type(self.items), BaseType):
+            res['items'] = self.items.__schema__()
+        elif self.items is not None:
+            res['items'] = [item.__schema__() for item in self.items]
+
         if self.min_items:
             res['minItems'] = self.min_items
         if self.max_items:
