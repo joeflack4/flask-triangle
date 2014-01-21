@@ -11,11 +11,11 @@
 
 
 from .required import Required
-from .patterns import Regexp, PatternProperty
+#from .patterns import Regexp, PatternProperty
 from .multiple import Multiple
 from .types import AsBoolean, AsInteger
-from .limits import Minimum, Maximum, MinimumLength, MaximumLength
-from .noschema import NoSchema
+#from .limits import Minimum, Maximum, MinimumLength, MaximumLength
+#from .noschema import NoSchema
 
 __all__ = ['Required', 'Regexp', 'PatternProperty', 'Multiple', 'AsBoolean',
            'Minimum', 'Maximum', 'MinimumLength', 'MaximumLength', 'AsInteger',

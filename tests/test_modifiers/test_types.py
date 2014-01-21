@@ -10,43 +10,64 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from nose.tools import assert_equal
+from nose.tools import raises
 
 from flask_triangle.modifiers import AsBoolean, AsInteger
-from flask_triangle.schema import Schema
+from flask_triangle.schema import Schema, String
+
+import jsonschema
 
 
 class TestAsBoolean(object):
 
     def setup(self):
-        self.validator = AsBoolean()
+        # setup a reference schema
+        self.schema = Schema(additional_properties=False)
+        self.schema.properties.add('test', String())
 
-    def test(self):
+    @raises(jsonschema.ValidationError)
+    def test_ref_fail(self):
         """
-        Modify the type of the leaf object.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'normal': Schema({'type': 'string'})},
-                         'required': ['normal']})
+        self.schema.validate({'test': False})
 
-        schema.apply_func(self.validator.alter_schema)
+    def test_ref_success(self):
+        self.schema.validate({'test': 'ok'})
 
-        assert_equal('boolean', schema['properties']['normal']['type'])
+    @raises(jsonschema.ValidationError)
+    def test_mod_fail(self):
+        modifier = AsBoolean()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({'test': 'ok'})
 
+    def test_mod_success(self):
+        modifier = AsBoolean()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({'test': False})
 
 class TestAsInteger(object):
 
     def setup(self):
-        self.validator = AsInteger()
+        # setup a reference schema
+        self.schema = Schema(additional_properties=False)
+        self.schema.properties.add('test', String())
 
-    def test(self):
+    @raises(jsonschema.ValidationError)
+    def test_ref_fail(self):
         """
-        Modify the type of the leaf object.
         """
-        schema = Schema({'type': 'object',
-                         'properties': {'normal': Schema({'type': 'string'})},
-                         'required': ['normal']})
+        self.schema.validate({'test': 1})
 
-        schema.apply_func(self.validator.alter_schema)
+    def test_ref_success(self):
+        self.schema.validate({'test': 'ok'})
 
-        assert_equal('integer', schema['properties']['normal']['type'])
+    @raises(jsonschema.ValidationError)
+    def test_mod_fail(self):
+        modifier = AsInteger()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({'test': 'ok'})
+
+    def test_mod_success(self):
+        modifier = AsInteger()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({'test': 1})

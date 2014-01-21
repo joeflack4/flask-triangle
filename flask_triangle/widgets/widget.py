@@ -55,7 +55,7 @@ class Widget(object):
         """
         Generate the HTML attribute strings of the current widget.
         """
-        return ' '.join([make_attr(*i) for i in 
+        return ' '.join([make_attr(*i) for i in
                          sorted(self._html_attributes.items())])
 
     def __init__(self, bind, name=None, label=None, modifiers=None,
@@ -113,6 +113,10 @@ class Widget(object):
         if modifiers is not None:
             self.modifiers += modifiers
 
+        for modifier in self.modifiers:
+            modifier.alter_widget(self)
+            modifier.alter_html_attr(self._html_attributes)
+            modifier.alter_schema(self.schema, bind)
 
     def __getattr__(self, name):
 

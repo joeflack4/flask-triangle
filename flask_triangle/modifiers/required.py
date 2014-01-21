@@ -5,7 +5,8 @@ flask_triangle.
 
 
 from __future__ import absolute_import
-from ..modifier import Modifier
+from .modifier import Modifier
+from flask_triangle.schema import Object
 
 
 class Required(Modifier):
@@ -41,11 +42,14 @@ class Required(Modifier):
         else:
             self.attributes = {}
 
-    def alter_schema(self, schema, fqn):
+    def alter_schema(self, schema, bind):
 
         if self.condition is not True:
             return
 
-        if schema.get(u'type') == u'object' and u'properties' in schema:
-            schema[u'required'] = list(set(schema.get(u'required', []) + \
-                                  [k for k in schema.get(u'properties', [])]))
+        segments = bind.split('.')
+        counter = 0
+        for fqn, subschema in schema:
+            if (fqn is None or bind.startswith(fqn)) and issubclass(type(subschema), Object):
+                subschema.required.append(segments[counter])
+                counter += 1

@@ -10,59 +10,77 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from nose.tools import assert_equal, assert_in, assert_not_in
+from nose.tools import raises
 
 from flask_triangle.modifiers import Required
-from flask_triangle.schema import Schema
+from flask_triangle.schema import Schema, Object, String
+
+import jsonschema
 
 
-class TestRequired(object):
+class TestRootRequired(object):
 
     def setup(self):
-        self.validator_false = Required(False)
-        self.validator_default = Required()
-        self.validator_conditional = Required('a_value|angular')
+        # setup a reference schema
+        self.schema = Schema(additional_properties=False)
+        self.schema.properties.add('test', String())
 
-    def test_0(self):
-        """Add a boolean 'required' attribute"""
-        assert_in('required', self.validator_default.attributes)
-        assert_equal(self.validator_default.attributes['required'], None)
-
-    def test_1(self):
+    def test_ref_success(self):
         """
-        Add a 'ng-required' attribute when the required is a client-side
-        condition.
+        The property test is not required.
         """
-        assert_in('data-ng-required', self.validator_conditional.attributes)
-        assert_equal(self.validator_conditional.attributes['data-ng-required'],
-                     'a_value|angular')
+        self.schema.validate({})
 
-    def test_2(self):
+    @raises(jsonschema.ValidationError)
+    def test_mod_fail(self):
         """
-        Alter the schema by adding a required field to the schema for each
-        named properties.
+        The property test is required.
         """
-        schema = Schema({'type': 'object',
-                 'properties': {'normal': Schema({'type': 'string'})}})
+        modifier = Required()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({})
 
-        schema.apply_func(self.validator_default.alter_schema)
-
-        assert_in('required', schema)
-        assert_equal(schema['required'], ['normal'])
-
-    def test_3(self):
+    def test_mod_success(self):
         """
-        The schema is not altered if the required condition is only client side.
+        The property test is required.
         """
-        schema = Schema({'type': 'object',
-                 'properties': {'normal': Schema({'type': 'string'})}})
+        modifier = Required()
+        modifier.alter_schema(self.schema, 'test')
+        self.schema.validate({'test': 'ok'})
 
-        schema.apply_func(self.validator_conditional.alter_schema)
 
-        assert_not_in('required', schema)
+class TestNestedRequired(object):
 
-    def test_4(self):
+    def setup(self):
+        # setup a reference schema
+        self.schema = Schema(additional_properties=False)
+        self.schema.properties.add('nested', Object(additional_properties=False))
+        self.schema.get('nested').properties.add('value', String())
+
+    def test_ref_success(self):
         """
-        When the required status is set to False, no attribute is set.
         """
-        assert_equal(self.validator_false.attributes, {})
+        self.schema.validate({})
+
+    @raises(jsonschema.ValidationError)
+    def test_mod_fail0(self):
+        """
+        """
+        modifier = Required()
+        modifier.alter_schema(self.schema, 'nested.value')
+        self.schema.validate({})
+
+    @raises(jsonschema.ValidationError)
+    def test_mod_fail1(self):
+        """
+        """
+        modifier = Required()
+        modifier.alter_schema(self.schema, 'nested.value')
+        self.schema.validate({'nested': {}})
+
+    def test_mod_success(self):
+        """
+        """
+        modifier = Required()
+        modifier.alter_schema(self.schema, 'nested.value')
+        self.schema.validate({'nested': {'value': 'success'}})

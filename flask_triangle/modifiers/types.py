@@ -12,24 +12,34 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from ..modifier import Modifier
+from .modifier import Modifier
 
 
-class AsBoolean(Modifier):
+class AsOthertype(Modifier):
     """
-    The widget value could either be `true` or `false`.
-    """
-
-    def alter_schema(self, schema, fqn):
-        if schema['type'] != 'object':
-            schema['type'] = 'boolean'
-
-
-class AsInteger(Modifier):
-    """
-    The widget value is an integer.
+    This class requires to be inherited and the class attribute `target_type` to
+    be set.
     """
 
-    def alter_schema(self, schema, fqn):
-        if schema['type'] != 'object':
-            schema['type'] = 'integer'
+    def alter_schema(self, schema, bind):
+        """
+        Modify the type if the node exists and is not an 'object'.
+        """
+
+        node = schema.get(bind)
+        if node is not None and node._type != 'object':
+            node._type = self.target_type
+
+
+class AsBoolean(AsOthertype):
+    """
+    The value bound to the widget is a boolean.
+    """
+    target_type = 'boolean'
+
+
+class AsInteger(AsOthertype):
+    """
+    The value bound to the widget is an integer.
+    """
+    target_type = 'integer'
