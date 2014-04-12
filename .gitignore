@@ -34,8 +34,11 @@ nosetests.xml
 .project
 .pydevproject
 
-debug.py
-
-
 # Vim
 *.swp
+
+# A scratchpad file
+debug.py
+
+# Generated documentation
+docs/_build/*
