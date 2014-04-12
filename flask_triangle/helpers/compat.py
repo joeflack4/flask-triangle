@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 """
-    helpers.python3
+    helpers.compat
     ---------------
 
-    A helper to facilitate the Python3 support.
+    Helpers to support Python3 along with Python2.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -12,7 +12,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import sys
 
+PY3 = sys.version_info[0] >= 3
 
-PY3 = sys.version_info > (3, 0)
+if PY3:
+    base_str = str
+else:
+    base_str = unicode
