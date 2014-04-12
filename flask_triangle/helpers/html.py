@@ -3,6 +3,8 @@
     flask_triangle.helpers.html
     ---------------------------
 
+    A set of tools to manipulate HTML.
+
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
@@ -11,48 +13,97 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import re
-from . import PY3
+import sys, re
+from flask_triangle.helpers.compat import base_str
 
 
-# Python3 support.
-string = str
-if not PY3:
-    string = unicode
 
-
-def camel_to_dash(value):
+class HTMLString(base_str):
     """
-    Convert camel-case notation to dash separated. This method is useful for
-    HTML attribute generation from keyword arguments.
-    """
-    if re.match(r'^[A-Za-z0-9]+$', value):
-        words = re.split(r'(^[a-z]*)|([A-Z][^A-Z]+)', value)
-        return '-'.join(c for c in words if c is not None and c).lower()
-    return value.lower()
-
-
-def make_attr(key, value):
-    """
-    Convert a key value pair to a valid html attribute.
-    It supports AngularJS expression as value with the use of the '|angular'
-    suffix.
-    """
-    if value is None:
-        return camel_to_dash(key)
-    else:
-        value = string(value)
-        if value is bool: value = value.lower()
-        if value.endswith('|angular'):
-            value = '{{{{{{{{{}}}}}}}}}'.format(value[:-8])
-        return '{}="{}"'.format(camel_to_dash(key), value)
-
-
-class HTMLString(string):
-    """
-    HTMLString is a special string object with an __html__ method used by Jinja2
-    to render the text as safe HTML code.
     """
 
     def __html__(self):
         return self
+
+
+class HTMLAttrs(object):
+    """
+    """
+
+    @staticmethod
+    def attr_name(string):
+        """
+        Compute a valid attribute name.
+        """
+
+        if re.match(r'^[A-Za-z0-9]+$', string):
+            words = re.split(r'(^[a-z]*)|([A-Z][^A-Z]+)', string)
+            return '-'.join(c for c in words if c is not None and c).lower()
+        return string.lower()
+
+    @staticmethod
+    def attr_value(value):
+        """
+        Render the value as expected in the HTML :
+        - double quotes
+        - local handling of the angular filter
+        """
+
+        resp = '"{}"'
+
+        # convert the value to a string
+        if isinstance(value, bool):
+            string = base_str(value).lower()
+        else:
+            string = base_str(value)
+
+        if string.endswith('|angular'):
+            string = '{{{{{}}}}}'.format(string[:-8])
+
+        return resp.format(string)
+
+    @staticmethod
+    def render_attr(name, value):
+        """
+        Render one attribute as expected in the HTML.
+        - key="value"
+        """
+
+        if value is None:
+            return name
+        return '{name}={value}'.format(name=name, value=value)
+
+    def __init__(self, **kwargs):
+
+        self.attributes = dict()
+
+        for k, v in kwargs.items():
+            self[k] = v
+
+    def items(self):
+        return self.attributes.items()
+
+    def __getitem__(self, key):
+        return self.attributes[self.attr_name(key)]
+
+    def __setitem__(self, key, value):
+        self.attributes[self.attr_name(key)] = value
+
+    def __delitem__(self, key):
+        del self.attributes[self.attr_name(key)]
+
+    def __iter__(self):
+        return self.attributes.__iter__()
+
+    def __unicode__(self):
+        return ' '.join(self.render_attr(k, v) for k, v in sorted(self.items()))
+
+    def __str__(self):
+        # Python2/3 compatibility
+        if sys.version_info > (3, 0):
+            return self.__unicode__()
+        return unicode(self).encode('utf-8')
+
+    def update(self, kvp_iterable):
+        for k, v in kvp_iterable:
+            self[k] = v
