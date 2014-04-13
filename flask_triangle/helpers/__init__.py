@@ -3,11 +3,12 @@
     helpers
     -------
 
-    A collection of useful things.
+    A collection of useful things for internal use.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
-from .html import HTMLString
+
+from flask_triangle.helpers.html import HTMLString, HTMLAttrs
 
 __all__ = ['HTMLString', 'HTMLAttrs']

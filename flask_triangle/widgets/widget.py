@@ -3,6 +3,8 @@
     flask_triangle.widget
     ---------------------
 
+    Implement the Widget base class.
+
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
@@ -11,7 +13,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import jinja2
+import sys, jinja2
 
 from flask_triangle.schema import Schema
 from flask_triangle.helpers import HTMLString, HTMLAttrs
@@ -72,7 +74,7 @@ class Widget(object):
         self.instance_counter = Widget.instance_counter
         Widget.instance_counter += 1
 
-        self.html_attributes = HtmlAttrs()
+        self.html_attributes = HTMLAttrs()
         self._schema = Schema()
         self.modifiers = []             # TODO: handle this
 
@@ -107,10 +109,11 @@ class Widget(object):
 
             # Finally the atomic schema is the leaf of this one-branch tree
             last = self.bind.split('.')[-1]
-            parent['properties'][last] = Schema(self.__class__.atomic_schema)
+            parent['properties'][last] = Schema(self.atomic_schema)
             return True
 
-        self._schema.apply_func(fqn_to_schema)
+        if self.atomic_schema is not None:
+            self._schema.apply_func(fqn_to_schema)
 
     def apply_modifiers(self):
         """
