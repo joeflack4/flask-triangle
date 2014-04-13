@@ -84,36 +84,14 @@ class Widget(object):
         self.label = label
         self.description = description
 
-        self.init_schema()
+        if self.atomic_schema is not None:
+            self._schema[bind] = self.atomic_schema
+
         self.apply_modifiers()
 
         # set the optional attributes
-        if html_attributes is not None:
-            self.html_attributes(html_attributes)
-
-    def init_schema(self):
-        """
-        Initialize the schema.
-        """
-
-        def fqn_to_schema(schema, fqn):
-            schema.update(Schema({'type': 'object', 'properties': {}}))
-
-            # Convert the fully qualified name of the widget (dotted notation) to
-            # nested subschemas. See it as a tree with one branch
-            parent = schema
-            for child in self.bind.split('.')[:-1]:
-                new = Schema({'type': 'object', 'properties': {}})
-                parent['properties'][child] = new
-                parent = new
-
-            # Finally the atomic schema is the leaf of this one-branch tree
-            last = self.bind.split('.')[-1]
-            parent['properties'][last] = Schema(self.atomic_schema)
-            return True
-
-        if self.atomic_schema is not None:
-            self._schema.apply_func(fqn_to_schema)
+        #if html_attributes is not None:
+        #    self.html_attributes(html_attributes)
 
     def apply_modifiers(self):
         """
@@ -121,8 +99,8 @@ class Widget(object):
         """
         for modifier in self.modifiers:
 
-            if hasattr(modifier, 'alter_schema'):
-                self.schema.apply_func(modifier.alter_schema)
+            #if hasattr(modifier, 'alter_schema'):
+            #    self.schema.apply_func(modifier.alter_schema)
 
             if hasattr(modifier, 'attributes'):
                 self.html_attributes.update(modifier.attributes)

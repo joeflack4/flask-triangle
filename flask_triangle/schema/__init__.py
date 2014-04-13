@@ -13,10 +13,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .container import Schema, Object
+from .containers import Schema, Object, Array
 from .natural import Boolean, Integer, Number, String
-from .array import Array
 
 
-__all__ = ['Schema', 'Object', 'Boolean', 'Integer', 'Number', 'String',
-           'Array']
+__all__ = [
+    'Schema', 'Object', 'Boolean', 'Integer', 'Number', 'String', 'Array',
+]

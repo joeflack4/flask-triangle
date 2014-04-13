@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 # import all the tests here
 
 from helpers import *
+from schema import *
 
 
 if __name__ == '__main__':
