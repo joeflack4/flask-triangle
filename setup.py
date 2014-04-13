@@ -15,7 +15,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=['flask', 'jsonschema'],
-    tests_require=['nose'],
+    tests_require=[],
     url='https://github.com/morgan-del/flask-triangle',
     license='BSD',
     classifiers=[
