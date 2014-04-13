@@ -14,6 +14,7 @@ from __future__ import absolute_import
 
 import copy
 import flask
+from six import add_metaclass
 
 from .widget import Widget
 from .schema import Schema
@@ -64,12 +65,12 @@ class FormBase(type):
         return new_class
 
 
+@add_metaclass(FormBase)
 class Form(object):
     """
     The Form acts as a container for multiple Widgets.
     """
 
-    __metaclass__ = FormBase
     _form_widget_list = list()
 
     def __init__(self, name, schema=None, strict=True, root=None):
