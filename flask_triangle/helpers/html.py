@@ -14,11 +14,11 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import sys, re
-from flask_triangle.helpers.compat import base_str
+from six import text_type
 
 
 
-class HTMLString(base_str):
+class HTMLString(text_type):
     """
     """
 
@@ -53,9 +53,9 @@ class HTMLAttrs(object):
 
         # convert the value to a string
         if isinstance(value, bool):
-            string = base_str(value).lower()
+            string = text_type(value).lower()
         else:
-            string = base_str(value)
+            string = text_type(value)
 
         if string.endswith('|angular'):
             string = '{{{{{}}}}}'.format(string[:-8])
