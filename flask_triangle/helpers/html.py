@@ -71,7 +71,8 @@ class HTMLAttrs(object):
 
         if value is None:
             return name
-        return '{name}={value}'.format(name=name, value=value)
+        return '{name}={value}'.format(name=name,
+                                       value=HTMLAttrs.attr_value(value))
 
     def __init__(self, **kwargs):
 
@@ -82,6 +83,9 @@ class HTMLAttrs(object):
 
     def items(self):
         return self.attributes.items()
+
+    def __contains__(self, key):
+        return self.attr_name(key) in self.attributes
 
     def __getitem__(self, key):
         return self.attributes[self.attr_name(key)]
