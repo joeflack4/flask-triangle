@@ -14,6 +14,7 @@ from __future__ import absolute_import
 
 import copy
 import flask
+from six import add_metaclass
 
 from .widgets import Widget
 from .schema import Schema, Object
@@ -63,9 +64,9 @@ class FormBase(type):
 
         return new_class
 
-# Python 2 and 3 compatibility for the metaclass
-_base_form = FormBase('_base_form', (object, ), {})
-class Form(_base_form):
+
+@add_metaclass(FormBase)
+class Form(object):
     """
     """
 
