@@ -46,7 +46,7 @@ class TestSchema0(object):
         """
         The "leaf" of the schema is equal to the schema attribute of the class.
         """
-        for k, v in SimpleCustomWidget.schema.iteritems():
+        for k, v in SimpleCustomWidget.schema.items():
             assert_equal(self.widget.schema['properties']['test'][k], v)
 
 
@@ -76,5 +76,5 @@ class TestSchema1(object):
         root = self.widget.schema
         for level in self.widget.bind.split('.'):
             root = root['properties'][level]
-        for k, v in SimpleCustomWidget.schema.iteritems():
+        for k, v in SimpleCustomWidget.schema.items():
             assert_equal(root[k], v)
