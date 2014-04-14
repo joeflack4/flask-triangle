@@ -84,6 +84,9 @@ class HTMLAttrs(object):
     def items(self):
         return self.attributes.items()
 
+    def get(self, key, default):
+        return self.attributes.get(self.attr_name(key), default)
+
     def __contains__(self, key):
         return self.attr_name(key) in self.attributes
 

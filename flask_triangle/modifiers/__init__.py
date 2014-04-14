@@ -12,8 +12,8 @@
 
 from .required import Required
 #from .patterns import Regexp, PatternProperty
-from .multiple import Multiple
-from .types import AsBoolean, AsInteger
+#from .multiple import Multiple
+#from .types import AsBoolean, AsInteger
 #from .limits import Minimum, Maximum, MinimumLength, MaximumLength
 #from .noschema import NoSchema
 

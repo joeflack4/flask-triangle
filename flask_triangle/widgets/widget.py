@@ -62,11 +62,6 @@ class Widget(object):
     def label(self, value):
         self._label = value
 
-    @property
-    def schema(self):
-        self._schema.compile()
-        return self._schema
-
     def __init__(self, bind, name=None, label=None, description=None,
                  html_attributes=None, modifiers=None):
 
@@ -75,8 +70,8 @@ class Widget(object):
         Widget.instance_counter += 1
 
         self.html_attributes = HTMLAttrs()
-        self._schema = Schema()
-        self.modifiers = []             # TODO: handle this
+        self.schema = Schema()
+        self.modifiers = []
 
         # default properties
         self.bind = bind                # is an HTML attribute (see properties)
@@ -84,30 +79,29 @@ class Widget(object):
         self.label = label
         self.description = description
 
+        if modifiers is not None:
+            self.modifiers += modifiers
+
         if self.atomic_schema is not None:
-            self._schema[bind] = self.atomic_schema
+            self.schema[bind] = self.atomic_schema
+
+        # set the optional attributes
+        if html_attributes is not None:
+            self.html_attributes.update(html_attributes)
 
         self.apply_modifiers()
 
-        # set the optional attributes
-        #if html_attributes is not None:
-        #    self.html_attributes(html_attributes)
-
     def apply_modifiers(self):
-        """
-        Update the schema and the HTML attributes in regards of the modifiers.
-        """
+
         for modifier in self.modifiers:
-
-            #if hasattr(modifier, 'alter_schema'):
-            #    self.schema.apply_func(modifier.alter_schema)
-
-            if hasattr(modifier, 'attributes'):
-                self.html_attributes.update(modifier.attributes)
+            modifier.apply_to(self)
 
     def __unicode__(self):
 
-        return jinja2.Template(self.html_template).render(widget=self)
+        return jinja2.Template(self.html_template).render(
+            widget=self,
+            attrs=self.html_attributes
+        )
 
     def __str__(self):
         # Python2/3 compatibility
