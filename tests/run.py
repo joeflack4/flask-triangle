@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from helpers import *
 from schema import *
+from widget import *
+from modifiers import *
 
 
 if __name__ == '__main__':

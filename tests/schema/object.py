@@ -15,7 +15,6 @@ from six import text_type
 from flask_triangle.schema import Object, String
 
 import unittest
-import mock
 
 
 class TestObjectProperties(unittest.TestCase):
