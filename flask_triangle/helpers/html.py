@@ -112,5 +112,5 @@ class HTMLAttrs(object):
         return unicode(self).encode('utf-8')
 
     def update(self, kvp_iterable):
-        for k, v in kvp_iterable:
+        for k, v in kvp_iterable.items():
             self[k] = v
