@@ -28,6 +28,7 @@ from helpers import *
 from schema import *
 from widget import *
 from modifiers import *
+from form import *
 
 
 if __name__ == '__main__':

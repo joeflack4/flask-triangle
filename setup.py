@@ -15,7 +15,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=['six', 'flask', 'jsonschema'],
-    tests_require=[],
+    tests_require=['beautifulsoup4'],
     url='https://github.com/morgan-del/flask-triangle',
     license='BSD',
     classifiers=[
