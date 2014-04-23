@@ -13,6 +13,6 @@
 from .limits import Limit, LengthLimit
 from .required import Required
 from .patterns import Regexp
+from .strict import Strict
 
-
-__all__ = ['Required', 'Limit', 'LengthLimit', 'Regexp']
+__all__ = ['Required', 'Limit', 'LengthLimit', 'Regexp', 'Strict']

@@ -14,11 +14,13 @@ from __future__ import unicode_literals
 from .limits import TestLengthLimitsMin, TestLengthLimitsMax
 from .required import TestRequired
 from .patterns import TestRegexp
+from .strict import TestStrict
 
 
 __all__ = [
     'TestRequired',
     'TestLengthLimitsMin',
     'TestLengthLimitsMax',
-    'TestRegexp'
+    'TestRegexp',
+    'TestStrict'
 ]
