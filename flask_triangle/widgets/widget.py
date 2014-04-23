@@ -48,7 +48,7 @@ class Widget(object):
     def name(self):
         return self.html_attributes.get('name', None)
 
-    @bind.setter
+    @name.setter
     def name(self, value):
         self.html_attributes['name'] = value
 
