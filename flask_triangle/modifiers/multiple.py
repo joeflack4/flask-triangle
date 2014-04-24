@@ -8,51 +8,28 @@
 """
 
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask_triangle.schema import Schema
-from ..modifier import Modifier
+
+from flask_triangle.modifiers.base import Modifier
 
 
 class Multiple(Modifier):
-    """
-    Add a constraint allowing more than one entry to be selected in a `select`
-    widget. This will affect the attributes of HTML widget and the validation
-    json schema altogether. However, this does not set client validation at
-    the moment.
-    """
 
-    def __init__(self, min_items=None, max_items=None):
-        """
-        :arg min: a number. The minimum number of selected elements in the 
-        list to succeed validation. If set to None, there is no minimum.
-        :arg max: a number. The maximum number of selected elements in the
-        list to succeed validation. If set to None, there is no maximum.
-        """
-        self.attributes = {u'multiple': None}
+    def __init__(self, min_items=0, max_items=0, unique_items=False):
+
         self.min_items = min_items
         self.max_items = max_items
+        self.unique_items = unique_items
 
-    def alter_schema(self, schema, fqn):
+    def alter_html_attr(self, widget):
 
-        if schema[u'type'] != u'object':
+        widget.html_attrs['multiple'] = None
 
-            # some properties must be moved from the array object to the item
-            # object :
-            items = Schema(schema)
-            # clean some uneeded value in items
-            for k in items.keys():
-                if k in ['asPatternProperty', 'required']:
-                    del items[k]
+    def alter_schema(self, widget):
 
-            # delete migrated values
-            for k in schema.keys():
-                if k in items:
-                    del schema[k]
-
-            schema[u'type'] = u'array'
-            schema[u'items'] = items
-            if self.min_items is not None:
-                schema[u'minItems'] = self.min_items
-            if self.max_items is not None:
-                schema[u'maxItems'] = self.max_items
-
+        target = widget.schema[widget.bind]
+        widget.schema[widget.bind] = Array(target,
+                                           min_items=self.min_items,
+                                           max_items=self.max_items,
+                                           unique_items=self.unique_items)
