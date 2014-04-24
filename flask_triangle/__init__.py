@@ -14,5 +14,8 @@
 
 from __future__ import absolute_import
 
-from .triangle import Triangle
-from .form import Form
+from flask_triangle.triangle import Triangle
+from flask_triangle.form import Form, validate
+
+
+__all__ = ['Triangle', 'Form', 'validate']

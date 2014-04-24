@@ -12,7 +12,7 @@
 
 from __future__ import absolute_import
 
-import copy
+import copy, jsonschema
 from six import add_metaclass
 from flask_triangle.widgets import Widget
 from flask_triangle.schema import schema_merger
@@ -88,3 +88,8 @@ class Form(object):
 
     def __iter__(self):
         return (getattr(self, obj_name) for obj_name in self._form_widget_list)
+
+
+def validate(form, json):
+
+    return jsonschema.validate(json, form.schema)
