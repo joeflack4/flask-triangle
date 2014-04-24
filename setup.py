@@ -1,31 +1,60 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+'''
+Flask-Triangle
+==============
+
+**With great UX comes great security needs.** *Uncle Ben*
+
+Flask-Triangle is utterly influenced by Flask-WTF_. It aims to provide you with
+similar features : form input handling and validation. The main difference is
+that Flask-Triangle is designed with AngularJS_ and XHR in mind.
+
+Flask-Triangle comes preloaded with various features :
+
+    * End-to-end data validation based on JSONschema_.
+    * A collection of ready to use *Widgets* for both standard HTML inputs and
+      toolkits (i.e. UI-Bootstrap_).
+    * A set of *Modifiers* to adapt the default behaviour to your needs.
+    * Various tools to integrate AngularJS in your Flask_ application.
+
+For detailed informations, have a look at the documentation_.
+
+.. _Flask: http://flask.pocoo.org/
+.. _Flask-WTF: https://flask-wtf.readthedocs.org/en/latest/
+.. _AngularJS: http://angularjs.org/
+.. _UI-Bootstrap: http://angular-ui.github.io/bootstrap/
+.. _JSONschema: http://json-schema.org/
+.. _documentation: http://flask-triangle.readthedocs.org/
+'''
 
 from setuptools import setup, find_packages
 
 setup(
 
     name='Flask-Triangle',
-    version='0.5.3',
+    version='0.5.3-dev',
     author='Morgan Delahaye-Prat',
     author_email='mdp@m-del.fr',
     description=('Integration of AngularJS and Flask.'),
-    long_description=open('README.rst').read(),
+    long_description=__doc__,
     packages=find_packages(),
     zip_safe=False,
     platforms='any',
     install_requires=['six', 'flask', 'jsonschema'],
     tests_require=['beautifulsoup4'],
-    url='https://github.com/morgan-del/flask-triangle',
+    url='http://flask-triangle.readthedocs.org/',
     license='BSD',
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules'
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Environment :: Web Environment',
+        'Framework :: Flask'
     ]
 )
