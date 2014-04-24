@@ -13,9 +13,9 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .containers import Schema, Object, Array
-from .natural import Boolean, Integer, Number, String
-
+from flask_triangle.schema.containers import Schema, Object, Array
+from flask_triangle.schema.natural import Boolean, Integer, Number, String
+from flask_triangle.schema.tools import schema_merger
 
 __all__ = [
     'Schema', 'Object', 'Boolean', 'Integer', 'Number', 'String', 'Array',
