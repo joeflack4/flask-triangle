@@ -13,10 +13,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from .container import Schema, Object
-from .natural import Boolean, Integer, Number, String
-from .array import Array
+from flask_triangle.schema.containers import Schema, Object, Array
+from flask_triangle.schema.natural import Boolean, Integer, Number, String
+from flask_triangle.schema.tools import schema_merger
 
-
-__all__ = ['Schema', 'Object', 'Boolean', 'Integer', 'Number', 'String',
-           'Array']
+__all__ = [
+    'Schema', 'Object', 'Boolean', 'Integer', 'Number', 'String', 'Array',
+]

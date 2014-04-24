@@ -3,7 +3,7 @@
     flask_triangle.schema.base
     --------------------------
 
-    The base type for all types used in a JSON Schema.
+    The base type of all types used in a JSON Schema.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -13,91 +13,47 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import json
+import sys, json
+from six import text_type
 
 
 class BaseType(object):
 
-    def __init__(self, type_,
-                 enum=None, all_of=None, any_of=None, one_of=None, is_not=None):
+    def __init__(self, type_, enum=False, all_of=False, any_of=False,
+                 one_of=False, is_not=False):
 
-        self._custom_schema = None  # see schema() property for more information
-
-        self._type = type_
+        self.type_ = type_
         self.is_not = is_not
-
-        if all_of is None:
-            self.all_of = []
-        else:
-            self.all_of = all_of
-
-        if any_of is None:
-            self.any_of = []
-        else:
-            self.any_of = any_of
-
-        if one_of is None:
-            self.one_of = []
-        else:
-            self.one_of = one_of
-
-        if enum is None:
-            self.enum = []
-        else:
-            self.enum = enum
-
-    @property
-    def schema(self):
-        """
-        Return the schema.
-        """
-        if self._custom_schema is None:
-            return self.__schema__()
-        return self._custom_schema
-
-    @schema.setter
-    def schema(self, value):
-        """
-        Set a custom schema to override the one computed.
-        """
-        self._custom_schema = value
-
-    def cache(self, active=True):
-        """
-        Cache the generated schema to avoid its recomputation on each access.
-        If `active` is False, the cache is unset.
-
-        Beware ! Unset the cache will delete any custom schema.
-        """
-        if active:
-            self._custom_schema = self.__schema__()
-        else:
-            self._custom_schema = None
-
-    def __repr__(self):
-        """
-        A JSON representation of the schema based on its dict representation.
-        """
-        return json.dumps(self.__schema__(), sort_keys=True, indent=4)
+        self.enum = enum or []
+        self.all_of = all_of or []
+        self.any_of = any_of or []
+        self.one_of = one_of or []
 
     def __hash__(self):
         return hashlib.sha1(repr(self))
 
     def __eq__(self, other):
-        return issubclass(type(other), BaseType) and repr(self) == repr(other)
+        return hash(self) == hash(other)
 
-    def __schema__(self):
-        """
-        Generate the JSON schema.
-        """
+    def __repr__(self):
+        return text_type(self)
 
-        res = {'type': self._type}
+    def __unicode__(self):
+        return json.dumps(self.schema(), sort_keys=True)
 
-        if len(self.enum): res['enum'] = self.enum
-        if len(self.all_of): res['allOf'] = [i.schema for i in self.all_of]
-        if len(self.any_of): res['anyOf'] = [i.schema for i in self.any_of]
-        if len(self.one_of): res['oneOf'] = [i.schema for i in self.one_of]
+    def __str__(self):
+        # Python2/3 compatibility
+        if sys.version_info > (3, 0):
+            return self.__unicode__()
+        return unicode(self).encode('utf-8')
 
-        if self.is_not is not None: res['not'] = self.is_not.schema
+    def schema(self):
+
+        res = {'type': self.type_}
+        if self.enum: res['enum'] = self.enum
+        if self.all_of: res['allOf'] = [i.schema for i in self.all_of]
+        if self.any_of: res['anyOf'] = [i.schema for i in self.any_of]
+        if self.one_of: res['oneOf'] = [i.schema for i in self.one_of]
+        if self.is_not: res['not'] = self.is_not.schema
 
         return res

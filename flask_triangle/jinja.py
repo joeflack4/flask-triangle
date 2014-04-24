@@ -60,18 +60,3 @@ def angular_filter(value):
     if type(value) is bool:
         value = repr(value).lower()
     return '{{{{{}}}}}'.format(value)
-
-
-def widget_test(obj, instance=Widget.__name__):
-    """
-    Test if a variable is a `Widget` instance.
-    """
-
-    if not isinstance(obj, Widget):
-        return False
-
-    cls = [obj.__class__]
-    while Widget not in cls:
-        cls += list(cls[-1].__bases__)
-
-    return instance in [i.__name__ for i in cls]

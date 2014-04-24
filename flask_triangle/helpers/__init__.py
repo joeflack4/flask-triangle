@@ -9,9 +9,6 @@
     :license: BSD, see LICENSE for more details.
 """
 
+from flask_triangle.helpers.html import HTMLString, HTMLAttrs
 
-from .python3 import PY3
-from .html import HTMLString, camel_to_dash, make_attr
-
-
-__all__ = ['PY3', 'HTMLString', 'camel_to_dash', 'make_attr']
+__all__ = ['HTMLString', 'HTMLAttrs']

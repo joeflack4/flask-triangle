@@ -3,7 +3,7 @@
     flask_triangle.widget
     ---------------------
 
-    Implements the basic mechanisms of every widgets.
+    Implement the Widget base class.
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
@@ -13,33 +13,44 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import jinja2
-from flask_triangle.helpers import HTMLString, camel_to_dash, make_attr
-from flask_triangle.schema import Schema, Object
+import sys, jinja2, copy, inspect
+
+from flask_triangle.schema import Schema
+from flask_triangle.helpers import HTMLString, HTMLAttrs
 
 
 class Widget(object):
     """
-    The cornerstone of Flask-Triangle, the class
-    :class:`~flask.triangle.widgets.base.Widget` is the base class of every
-    widgets.
     """
 
-    schema = None
-    html_template = None
+    # the instance counter is used to keep track of the widget order in a form.
+    instance_counter = 0
 
-    _html_attributes = None     # this must be initialized
+    # the default HTML template
+    html_template = (
+        '<em>'
+        'This widget is not renderable.'
+        '</em>'
+    )
 
-    # a counter to keep track of the instantiation order
-    _instance_counter = 0
+    # the atomic_schema
+    atomic_schema = None
 
     @property
     def bind(self):
-        return self._html_attributes['data-ng-model']
+        return self.html_attributes.get('ngModel', None)
 
     @bind.setter
     def bind(self, value):
-        self._html_attributes['data-ng-model'] = value
+        self.html_attributes['ngModel'] = value
+
+    @property
+    def name(self):
+        return self.html_attributes.get('name', None)
+
+    @name.setter
+    def name(self, value):
+        self.html_attributes['name'] = value
 
     @property
     def label(self):
@@ -51,112 +62,73 @@ class Widget(object):
     def label(self, value):
         self._label = value
 
-    def _attr(self):
-        """
-        Generate the HTML attribute strings of the current widget.
-        """
-        return ' '.join([make_attr(*i) for i in
-                         sorted(self._html_attributes.items())])
-
-    def __init__(self, bind, name=None, label=None, modifiers=None,
-                 metadata=None, **kwargs):
-        """
-        :arg bind: An assignable ``angular expression`` to data-bind to.
-        See ngModel_ directive for more information.
-        :arg name: An optional string.
-        :arg label: An optional string.
-        :arg modifiers: An optional `list` of `Modifiers`. The modifiers are the
-        transformations of the widget behavior that impact the value of the
-        widget.
-        :arg metadata: Additional metadata for the widget. Metadatas aren't
-        rendered in the HTML.
-        :arg **kwargs: Additional HTML attributes for the widget.
-
-        .. _ngModel: http://docs.angularjs.org/api/ng.directive:ngModel
-        """
+    def __init__(self, bind, name=None, label=None, description=None,
+                 html_attributes=None, modifiers=None, **kwargs):
 
         # increment the instance counter
-        self._instance_counter = Widget._instance_counter
-        Widget._instance_counter += 1
+        self.instance_counter = Widget.instance_counter
+        Widget.instance_counter += 1
 
-        # Initialize the runtime object's properties
-        for key in kwargs.keys():
-            if camel_to_dash(key) in ['data-ng-model', 'ng-model']:
-                raise AttributeError('`ng-model` is automatically generated '
-                                     'from the `bind` argument.')
-
-        # the dict is required by later assignation (bind especially)
-        self._html_attributes = dict(kwargs)
-
-        self.bind = bind
-        self.metadata = metadata
-
-        self._label = label # see the property for the behavior of the label
-
-        # Create the local schema
+        self.html_attributes = HTMLAttrs()
         self.schema = Schema()
-        if name is not None and name:
-            self.schema.title = name
-            self._html_attributes['name'] = name
-
-        if self.__class__.schema is not None:
-            target = self.schema
-            for level in bind.split('.')[:-1]:
-                target.properties.add(level, Object())
-                target = target.properties[level]
-
-            target.properties.add(bind.rsplit('.', 1)[-1],
-                                  self.__class__.schema)
-
-        # Modify the default behaviour
         self.modifiers = []
+
+        # default properties
+        self.bind = bind                # is an HTML attribute (see properties)
+        self.name = name                # is an HTML attribute (see properties)
+        self.label = label
+        self.description = description
+
+        if self.atomic_schema is not None:
+            self.schema[bind] = copy.deepcopy(self.atomic_schema)
+
+        self._apply_customize(**kwargs)
+
+        # final user's stuff override everything else
         if modifiers is not None:
             self.modifiers += modifiers
+        if html_attributes is not None:
+            self.html_attributes.update(html_attributes)
+
+        self.apply_modifiers()
+
+    def _apply_customize(self, **kwargs):
+        """
+        A recusive method calling each customize method found in the inheritance
+        tree of the widget.
+        """
+
+        def recursion(cls):
+
+            if cls.__base__ != Widget:
+                recursion(cls.__base__)
+
+            customize = getattr(cls, 'customize', None)
+            if customize is not None:
+                # Get the list minus the first argument (self)
+                args = inspect.getargspec(customize).args[1:]
+                customize(
+                    self,
+                    **dict((k, v) for k, v in kwargs.items() if k in args)
+                )
+
+        if self.__class__ is not Widget:
+            recursion(self.__class__)
+
+    def apply_modifiers(self):
 
         for modifier in self.modifiers:
-            modifier.alter_widget(self)
-            modifier.alter_html_attr(self._html_attributes)
-            modifier.alter_schema(self.schema, bind)
+            modifier.apply_to(self)
 
-    def __getattr__(self, name):
+    def __unicode__(self):
 
-        # name and id have custom managment
-        if name in ['name', 'id']:
-            return self._html_attributes.get(name, None)
+        return jinja2.Template(self.html_template).render(
+            widget=self,
+            attrs=self.html_attributes
+        )
 
-        if name not in self._html_attributes:
-            raise AttributeError
-        return self._html_attributes[name]
-
-    def __setattr__(self, name, value):
-
-        # name and id have custom management
-        if name in ['name', 'id']:
-            if value is None:
-                self._html_attributes.pop(name, None)
-            else:
-                self._html_attributes[name] = value
-
-        if self._html_attributes is not None and name in self._html_attributes:
-            self._html_attributes[name] = value
-        else:
-            super(Widget, self).__setattr__(name, value)
-
-    def __call__(self, **kwargs):
-        """
-        Generate the HTML code of the current widget. Keyword arguments are
-        used to format the generated HTML.
-
-            >>> a = DemoWidget('hello.world', '{name}')
-            >>> a(name='demo')
-            '<input name="demo" ng-model="hello.world"/>
-        """
-
-        # generate the HTML code of the widget
-        template = ''
-        if self.html_template is not None:
-            template = jinja2.Template(self.html_template)\
-                             .render(attr=self._attr(), widget=self)
-
-        # return it for rendering
-        return HTMLString(template.strip().format(**kwargs))
+    def __str__(self):
+        # Python2/3 compatibility
+        if sys.version_info > (3, 0):
+            return self.__unicode__()
+        return unicode(self).encode('utf-8')

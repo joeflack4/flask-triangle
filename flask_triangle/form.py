@@ -12,13 +12,10 @@
 
 from __future__ import absolute_import
 
-import copy
-import flask
-
-from .widgets import Widget
-from .schema import Schema, Object
-from .triangle import json_validate
-from .helpers import HTMLString
+import copy, jsonschema
+from six import add_metaclass
+from flask_triangle.widgets import Widget
+from flask_triangle.schema import schema_merger
 
 
 class FormBase(type):
@@ -27,83 +24,72 @@ class FormBase(type):
     def __new__(mcs, name, bases, attrs):
 
         super_new = super(FormBase, mcs).__new__
+        parents = [b for b in bases if isinstance(b, mcs)]
 
-        if name == '_base_form' and attrs == {}:
-            return super_new(mcs, name, bases, attrs)
-
-        parents = [b for b in bases if isinstance(b, FormBase) and
-                   not (b.__name__ == '_base_form' and b.__mro__ == (b, object))]
         if not parents:
             return super_new(mcs, name, bases, attrs)
 
-        module = attrs.pop('__module__')
-        new_class = super_new(mcs, name, bases, {'__module__': module})
-        new_class._form_widget_list = copy.deepcopy(new_class._form_widget_list)
+        new_class = super_new(
+            mcs, name, bases,
+            {'__module__': attrs.pop('__module__')}
+        )
 
+        new_class._form_widget_list = copy.deepcopy(new_class._form_widget_list)
         new_widgets = list()
 
         for obj_name, obj in attrs.items():
             setattr(new_class, obj_name, obj)
             if isinstance(obj, Widget):
-                # use the attribute name as the widget's name
+
                 if obj.name is None:
                     obj.name = obj_name
 
-                # for each widgets found, add the new ones
                 if obj_name not in new_class._form_widget_list:
                     new_widgets.append(obj_name)
 
             elif obj_name in new_class._form_widget_list:
-                # if the attribute is not a widget but there was a former
-                # attribute which was a widget, removes it from the list.
                 new_class._form_widget_list.remove(obj_name)
 
-        new_widgets.sort(key=lambda k: getattr(new_class, k)._instance_counter)
+        new_widgets.sort(key=lambda k: getattr(new_class, k).instance_counter)
         new_class._form_widget_list += new_widgets
 
         return new_class
 
-# Python 2 and 3 compatibility for the metaclass
-_base_form = FormBase('_base_form', (object, ), {})
-class Form(_base_form):
+
+@add_metaclass(FormBase)
+class Form(object):
     """
     """
 
     _form_widget_list = list()
 
-    def __init__(self, name, schema=None, strict=True, root=None):
-        """
-        :arg schema: A ``dict``. A custom schema to describe how-to validate
-        resulting JSON from this form.
-
-        :arg root: A ``string``. The name of the properties to use as
-        root of the JSON schema.
-        """
-
-
-        if schema is not None:
-            self.schema = copy.deepcopy(schema)
-        else:
-            self.schema = Schema(additional_properties=not(strict))
-            for widget in self:
-                self.schema.merge(widget.schema)
-            self.schema.title = name    # the merge overwrite the title if is
-                                        # set earlier.
-            for _, node in self.schema:
-                if issubclass(type(node), Object):
-                    node.additional_properties = not(strict)
-
-        if root is not None:
-            self.schema = self.schema.get(root)
-
-        self.name = name
-
     @property
-    def validate(self):
+    def schema(self):
+        if self._vroot is not None:
+            return self._schema[self._vroot]
+        return self._schema
+
+    def __init__(self, vroot=None, strict=True, alternate_schema=None):
         """
-        Return a function decorator to validate JSON in the current request.
         """
-        return json_validate(self.schema.schema)
+
+        self._vroot = vroot
+        if alternate_schema is not None:
+            self._schema = copy.deepcopy(alternate_schema)
+        else:
+            wschemas = [getattr(self, k).schema for k in self._form_widget_list]
+            self._schema = schema_merger(*wschemas)
+
+        # apply strict to the schema
+        if strict:
+            for k, v in self._schema:
+                if hasattr(v, 'additional_properties'):
+                    v.additional_properties = not strict
 
     def __iter__(self):
         return (getattr(self, obj_name) for obj_name in self._form_widget_list)
+
+
+def validate(form, json):
+
+    return jsonschema.validate(json, form.schema)
