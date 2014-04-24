@@ -9,7 +9,6 @@
 
 
 from __future__ import absolute_import
-from __future__ import unicode_literals
 
 from .limits import TestLengthLimitsMin, TestLengthLimitsMax
 from .required import TestRequired
