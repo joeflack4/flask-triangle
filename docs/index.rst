@@ -24,10 +24,15 @@ validate the data received from it.
 The use of HTML5 with AngularJS and JSON-schema lets you define a full
 validating chain (client-side and server-side) in one place.
 
+User's Guide
+------------
+
+This documentation will show you how to get started in using Flask-Triangle with
+Flask.
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
 
    installing
    glance
+

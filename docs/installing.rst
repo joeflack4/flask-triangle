@@ -11,7 +11,7 @@ Installing Flask-Triangle is simple with pip::
 You can also install it from the git repository to have the latest development
 version::
 
-    pip install git+https://github.com/morgan-del/flask-triangle.git
+    pip install git+https://github.com/morgan-del/flask-triangle.git@develop
 
 
 Get the Source
