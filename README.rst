@@ -1,6 +1,11 @@
 Flask-Triangle
 --------------
 
+Master: |master-travis| Develop: |develop-travis|
+
+.. |master-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=master   :target: https://travis-ci.org/morgan-del/flask-triangle
+.. |develop-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=develop   :target: https://travis-ci.org/morgan-del/flask-triangle
+
 **With great UX comes great security needs.**
 *Uncle Ben*
 
