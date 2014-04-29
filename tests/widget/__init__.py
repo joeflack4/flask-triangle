@@ -16,7 +16,12 @@ from .customize import (
     TestCustomizePriority
 )
 
+from .rendering import (
+    TestRendering,
+)
+
 __all__ = [
+    'TestRendering',
     'TestCustomize',
     'TestCustomizeInheritance',
     'TestCustomizePriority'

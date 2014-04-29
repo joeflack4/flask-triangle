@@ -15,6 +15,7 @@ from __future__ import unicode_literals
 
 import sys, jinja2, copy, inspect
 
+from six import text_type
 from flask_triangle.schema import Schema
 from flask_triangle.helpers import HTMLString, HTMLAttrs
 
@@ -132,3 +133,6 @@ class Widget(object):
         if sys.version_info > (3, 0):
             return self.__unicode__()
         return unicode(self).encode('utf-8')
+
+    def __html__(self):
+        return text_type(self)
