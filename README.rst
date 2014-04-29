@@ -1,10 +1,11 @@
 Flask-Triangle
 ==============
 
-**With great UX comes great security needs.** *Uncle Ben*
+.. |master-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=master   :target: https://travis-ci.org/morgan-del/flask-triangle
+.. |develop-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=develop   :target: https://travis-ci.org/morgan-del/flask-triangle
 
-.. image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=develop
-  :target: https://travis-ci.org/morgan-del/flask-triangle
+
+**With great UX comes great security needs.** *Uncle Ben*
 
 Flask-Triangle is utterly influenced by Flask-WTF_. It aims to provide you with
 similar features : form input handling and validation. The main difference is
