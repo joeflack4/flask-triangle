@@ -1,8 +1,7 @@
 Flask-Triangle
 ==============
 
-.. |master-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=master   :target: https://travis-ci.org/morgan-del/flask-triangle
-.. |develop-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.svg?branch=develop   :target: https://travis-ci.org/morgan-del/flask-triangle
+Master |master-travis| -- Develop |develop-travis|
 
 
 **With great UX comes great security needs.** *Uncle Ben*
@@ -27,3 +26,5 @@ For detailed informations, have a look at the documentation_.
 .. _UI-Bootstrap: http://angular-ui.github.io/bootstrap/
 .. _JSONschema: http://json-schema.org/
 .. _documentation: http://flask-triangle.readthedocs.org/
+.. |master-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.png?branch=master
+.. |develop-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.png?branch=develop
