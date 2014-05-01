@@ -1,7 +1,7 @@
 Flask-Triangle
 ==============
 
-Master |master-travis| -- Develop |develop-travis|
+Master |master-travis| -- Develop |develop-travis| |develop-coveralls|
 
 
 **With great UX comes great security needs.** *Uncle Ben*
@@ -28,3 +28,4 @@ For detailed informations, have a look at the documentation_.
 .. _documentation: http://flask-triangle.readthedocs.org/
 .. |master-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.png?branch=master
 .. |develop-travis| image:: https://travis-ci.org/morgan-del/flask-triangle.png?branch=develop
+.. |develop-coveralls| image:: https://coveralls.io/repos/morgan-del/flask-triangle/badge.png?branch=develop
