@@ -17,7 +17,7 @@ import sys, jinja2, copy, inspect
 
 from six import text_type
 from flask_triangle.schema import Schema
-from flask_triangle.helpers import HTMLAttrs
+from flask_triangle.helpers import HTMLAttrs, HTMLString
 
 
 class Widget(object):
@@ -134,5 +134,13 @@ class Widget(object):
             return self.__unicode__()
         return unicode(self).encode('utf-8')
 
-    def __html__(self):
+    def __call__(self, **kwargs):
+
+        attrs_bak = copy.deepcopy(self.html_attributes)
+        self.html_attributes.update(kwargs)
+        rendering = text_type(self)
+        self.html_attributes = attrs_bak
+        return HTMLString(rendering)
+
+    def __html__(self): # pragma: no cover
         return text_type(self)

@@ -16,17 +16,18 @@ import unittest, warnings, jinja2, bs4
 from flask_triangle.widgets.standard import TextInput
 
 
-def render(widget):
+def render(widget, template=None):
 
-    template = '''
-    <html>
-      <body>
-        <form>
-          {{widget}}
-        </form>
-      </body>
-    </html>
-    '''
+    if template is None:
+        template = '''
+            <html>
+              <body>
+                <form>
+                  {{widget}}
+                </form>
+              </body>
+            </html>
+        '''
 
     return jinja2.Template(template).render(widget=widget)
 
@@ -40,7 +41,7 @@ class TestRendering(unittest.TestCase):
 
     def setUp(self):
 
-        self.widget = TextInput('bind')
+        self.widget = TextInput('bind', html_attributes={'custom': 'ok'})
 
     def test_rendered_as_safe_html(self):
 
@@ -50,4 +51,38 @@ class TestRendering(unittest.TestCase):
 
         soup = to_soup(render(self.widget))
         inputs = soup.find_all('input')
+        self.assertEqual(len(inputs), 1)
+
+    def test_late_html_attribute(self):
+
+        template = '''
+            <html>
+              <body>
+                <form>
+                  {{widget(class='test')}}
+                </form>
+              </body>
+            </html>
+        '''
+
+        soup = to_soup(render(self.widget, template))
+        inputs = soup.find_all('input', {'class': 'test'})
+        self.assertEqual(len(inputs), 1)
+
+    def test_overwrite_html_attribute(self):
+
+        template = '''
+            <html>
+              <body>
+                <form>
+                  {{widget(custom='success')}}
+                </form>
+              </body>
+            </html>
+        '''
+
+        soup = to_soup(render(self.widget, template))
+        inputs = soup.find_all('input', {'custom': 'ok'})
+        self.assertEqual(len(inputs), 0)
+        inputs = soup.find_all('input', {'custom': 'success'})
         self.assertEqual(len(inputs), 1)

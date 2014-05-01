@@ -105,3 +105,9 @@ class HTMLAttrs(object):
     def update(self, kvp_iterable):
         for k, v in kvp_iterable.items():
             self[k] = v
+
+
+class HTMLString(text_type):
+
+    def __html__(self):  # pragma: no cover
+        return self
