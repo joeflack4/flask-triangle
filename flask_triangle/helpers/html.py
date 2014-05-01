@@ -17,15 +17,6 @@ import sys, re
 from six import text_type
 
 
-
-class HTMLString(text_type):
-    """
-    """
-
-    def __html__(self):
-        return self
-
-
 class HTMLAttrs(object):
     """
     """
@@ -105,7 +96,7 @@ class HTMLAttrs(object):
     def __unicode__(self):
         return ' '.join(self.render_attr(k, v) for k, v in sorted(self.items()))
 
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         # Python2/3 compatibility
         if sys.version_info > (3, 0):
             return self.__unicode__()

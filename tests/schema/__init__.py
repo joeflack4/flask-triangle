@@ -11,9 +11,14 @@
 from __future__ import absolute_import
 
 from .object import TestObjectProperties, TestObjectFeatures
+from .natural import TestString, TestInteger, TestNumber, TestBoolean
 
 
 __all__ = [
     'TestObjectProperties',
     'TestObjectFeatures',
+    'TestString',
+    'TestInteger',
+    'TestNumber',
+    'TestBoolean'
 ]

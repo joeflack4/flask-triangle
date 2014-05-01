@@ -33,9 +33,12 @@ class String(BaseType):
 
         res = super(String, self).schema()
 
-        if self.min_length: res['minLength'] = self.min_length
-        if self.max_length: res['maxLength'] = self.max_length
-        if self.pattern: res['pattern'] = self.pattern
+        if self.min_length:
+            res['minLength'] = self.min_length
+        if self.max_length:
+            res['maxLength'] = self.max_length
+        if self.pattern:
+            res['pattern'] = self.pattern
 
         return res
 
@@ -57,7 +60,8 @@ class Numeric(BaseType):
 
         res = super(Numeric, self).schema()
 
-        if self.multiple_of: res['multipleOf'] = self.multiple_of
+        if self.multiple_of:
+            res['multipleOf'] = self.multiple_of
 
         if self.minimum:
             res['minimum'] = self.minimum

@@ -9,7 +9,7 @@
 
 
 from __future__ import absolute_import
-from .html import HTMLAttrsTest
+from .html import HTMLAttrsTest, HTMLAttrsRenderingTest
 
 
-__all__ = ['HTMLAttrsTest']
+__all__ = ['HTMLAttrsTest', 'HTMLAttrsRenderingTest']

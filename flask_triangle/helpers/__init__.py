@@ -9,6 +9,6 @@
     :license: BSD, see LICENSE for more details.
 """
 
-from flask_triangle.helpers.html import HTMLString, HTMLAttrs
+from flask_triangle.helpers.html import HTMLAttrs
 
-__all__ = ['HTMLString', 'HTMLAttrs']
+__all__ = ['HTMLAttrs']

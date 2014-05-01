@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 
 import unittest
 
+from six import text_type
 from flask_triangle.helpers import HTMLAttrs
 
 
@@ -63,13 +64,6 @@ class HTMLAttrsTest(unittest.TestCase):
         self.assertNotIn('camel-case', self.attr)
         self.assertNotIn('camelCase', self.attr)
 
-    def test_rendering(self):
-
-        self.assertEqual(
-            str(self.attr),
-            'attribute="ok" boolean camel-case="too" dash-syntax="yeah"'
-        )
-
     def test_exception_0(self):
 
         with self.assertRaises(KeyError):
@@ -114,3 +108,36 @@ class HTMLAttrsTest(unittest.TestCase):
         self.assertIn('camelCase', attr)
         self.assertEqual(attr['camel-case'], 'too')
         self.assertEqual(attr['camelCase'], 'too')
+
+class HTMLAttrsRenderingTest(unittest.TestCase):
+
+
+    def test_rendering(self):
+
+        attr = HTMLAttrs()
+        attr['attribute'] = 'ok'
+        attr['boolean'] = None
+        attr['camelCase'] = 'too'
+        attr['dash-syntax'] = 'yeah'
+
+        self.assertEqual(
+            text_type(attr),
+            'attribute="ok" boolean camel-case="too" dash-syntax="yeah"'
+        )
+
+    def test_boolean(self):
+        """
+        Boolean value are rendered in lowercase.
+        """
+
+        attr = HTMLAttrs(firstValue=True, secondValue=False)
+        self.assertIn('second-value="false"', text_type(attr))
+        self.assertIn('first-value="true"', text_type(attr))
+
+    def test_angular_suffic(self):
+        """
+        When |angular suffix is used, angular's variable notation is used.
+        """
+
+        attr = HTMLAttrs(key="variable|angular")
+        self.assertEqual('key="{{variable}}"', text_type(attr))

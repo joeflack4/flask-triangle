@@ -20,9 +20,14 @@ from .rendering import (
     TestRendering,
 )
 
+from .base import (
+    TestBaseWidget,
+)
+
 __all__ = [
     'TestRendering',
     'TestCustomize',
     'TestCustomizeInheritance',
-    'TestCustomizePriority'
+    'TestCustomizePriority',
+    'TestBaseWidget'
 ]
