@@ -33,10 +33,10 @@ from setuptools import setup, find_packages
 setup(
 
     name='Flask-Triangle',
-    version='0.5.3-dev',
-    author='Morgan Delahaye-Prat',
-    author_email='mdp@m-del.fr',
-    description=('Integration of AngularJS and Flask.'),
+    version='0.5.5-dev',
+    author='Joe Flack',
+    author_email='joeflack4@gmail.com',
+    description=('Integration of AngularJS and Flask, originally created by Morgan Delahaye-Prat (mdp@m-del.fr).'),
     long_description=__doc__,
     packages=find_packages(),
     zip_safe=False,
@@ -44,6 +44,8 @@ setup(
     install_requires=['six', 'flask', 'jsonschema'],
     tests_require=['beautifulsoup4'],
     url='http://flask-triangle.readthedocs.org/',
+	download_url = 'https://github.com/joeflack4/flask-triangle/tarball/v0.5.5'
+	keywords = ['flask', 'angular', 'jinja2', 'angular js']
     license='BSD',
     classifiers=[
         'Development Status :: 4 - Beta',
