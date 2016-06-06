@@ -32,7 +32,7 @@ from setuptools import setup, find_packages
 
 setup(
 
-    name='Flask-Triangle',
+    name='Flask-Triangle-joeflack4',
     version='0.5.5-dev',
     author='Joe Flack',
     author_email='joeflack4@gmail.com',
@@ -44,8 +44,8 @@ setup(
     install_requires=['six', 'flask', 'jsonschema'],
     tests_require=['beautifulsoup4'],
     url='http://flask-triangle.readthedocs.org/',
-	download_url = 'https://github.com/joeflack4/flask-triangle/tarball/v0.5.5'
-	keywords = ['flask', 'angular', 'jinja2', 'angular js']
+	download_url = 'https://github.com/joeflack4/flask-triangle/tarball/v0.5.5',
+	keywords = ['flask', 'angular', 'jinja2', 'angular js', 'flask triangle'],
     license='BSD',
     classifiers=[
         'Development Status :: 4 - Beta',
