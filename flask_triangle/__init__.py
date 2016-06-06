@@ -12,10 +12,10 @@
 """
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from flask_triangle.triangle import Triangle
-from flask_triangle.form import Form, validate
+from .triangle import Triangle
+from .form import Form
+from .widget import Widget
 
-
-__all__ = ['Triangle', 'Form', 'validate']
+__all__ = ['Triangle', 'Form', 'Widget']

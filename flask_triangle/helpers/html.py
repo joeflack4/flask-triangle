@@ -3,13 +3,14 @@
     flask_triangle.helpers.html
     ---------------------------
 
-    A set of tools to manipulate HTML.
-
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
 
 
+<<<<<<< HEAD
+from __future__ import absolute_import, division, print_function, unicode_literals
+=======
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
@@ -20,42 +21,24 @@ from six import text_type
 class HTMLAttrs(object):
     """
     """
+>>>>>>> 4e2abbf8e43dd46234642445e69e0ac2683425b4
 
-    @staticmethod
-    def attr_name(string):
+try:
+    class HTMLString(unicode):
         """
-        Compute a valid attribute name.
+        A `unicode` string considered as sage HTML.
         """
-
-        if re.match(r'^[A-Za-z0-9]+$', string):
-            words = re.split(r'(^[a-z]*)|([A-Z][^A-Z]+)', string)
-            return '-'.join(c for c in words if c is not None and c).lower()
-        return string.lower()
-
-    @staticmethod
-    def attr_value(value):
+        def __html__(self):
+            return self
+except:
+    class HTMLString(str):
         """
-        Render the value as expected in the HTML :
-        - double quotes
-        - local handling of the angular filter
+        A `unicode` string considered as sage HTML.
         """
-
-        resp = '"{}"'
-
-        # convert the value to a string
-        if isinstance(value, bool):
-            string = text_type(value).lower()
-        else:
-            string = text_type(value)
-
-        if string.endswith('|angular'):
-            string = '{{{{{}}}}}'.format(string[:-8])
-
-        return resp.format(string)
-
-    @staticmethod
-    def render_attr(name, value):
-        """
+<<<<<<< HEAD
+        def __html__(self):
+            return self
+=======
         Render one attribute as expected in the HTML.
         - key="value"
         """
@@ -111,3 +94,4 @@ class HTMLString(text_type):
 
     def __html__(self):  # pragma: no cover
         return self
+>>>>>>> 4e2abbf8e43dd46234642445e69e0ac2683425b4

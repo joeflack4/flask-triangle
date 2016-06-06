@@ -3,18 +3,16 @@
     flask_triangle.widgets.standard
     -------------------------------
 
-    HTML5's standard widget collection.
+    HTML5 standard widgets supported by AngularJS
 
     :copyright: (c) 2013 by Morgan Delahaye-Prat.
     :license: BSD, see LICENSE for more details.
 """
 
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .text import (Input, TextInput)
+from .text import Input, TextInput, NumberInput, Textarea
 from .select import Select
 
-__all__ = ['Input', 'TextInput', 'PasswordInput', 'EmailInput', 'Textarea',
-           'NumberInput', 'Select']
+__all__ = ['Input', 'TextInput', 'NumberInput', 'Textarea', 'Select']

@@ -8,54 +8,82 @@
 """
 
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from flask_triangle.modifiers.base import Modifier
-
-
-class Limit(Modifier):
-
-    def __init__(self, minimum=0, maximum=False):
-
-        self.minimum = minimum
-        self.maximum = maximum
-
-    def alter_attrs(self, widget):
-
-        if self.minimum:
-            widget.html_attributes['min'] = self.minimum
-        if self.maximum:
-            widget.html_attributes['max'] = self.maximum
-
-    def alter_schema(self, widget):
-        target = widget.schema[widget.bind]
-        if self.minimum:
-            target.minimum = self.minimum
-        if self.maximum:
-            target.maximum = self.maximum
+from flask_triangle.modifier import Modifier
 
 
+class Minimum(Modifier):
+    """
+    Add a minimum value validation.
+    """
 
-class LengthLimit(Modifier):
+    def __init__(self, value):
+        """
+        """
+        self.value = value
 
-    def __init__(self, minimum=0, maximum=False):
+    @property
+    def attributes(self):
+        return {'min': self.value}
 
-        self.minimum = minimum
-        self.maximum = maximum
+    def alter_schema(self, schema, fqn):
+        if schema['type'] != 'object':
+            schema['minimum'] = self.value
 
-    def alter_attrs(self, widget):
 
-        if self.minimum:
-            widget.html_attributes['ngMinlength'] = self.minimum
-        if self.maximum:
-            widget.html_attributes['ngMaxlength'] = self.maximum
+class Maximum(Modifier):
+    """
+    Add a maximum value validation.
+    """
 
-    def alter_schema(self, widget):
+    def __init__(self, value):
+        """
+        """
+        self.value = value
 
-        target = widget.schema[widget.bind]
+    @property
+    def attributes(self):
+        return {'max': self.value}
 
-        if self.minimum:
-            target.min_length = self.minimum
-        if self.maximum:
-            target.max_length = self.maximum
+    def alter_schema(self, schema, fqn):
+        if schema['type'] != 'object':
+            schema['maximum'] = self.value
+
+
+class MinimumLength(Modifier):
+    """
+    Add a minimum value validation.
+    """
+
+    def __init__(self, value):
+        """
+        """
+        self.value = value
+
+    @property
+    def attributes(self):
+        return {'data-ng-minlength': self.value}
+
+    def alter_schema(self, schema, fqn):
+        if schema['type'] != 'object':
+            schema['minLength'] = self.value
+
+
+class MaximumLength(Modifier):
+    """
+    Add a maximum value validation.
+    """
+
+    def __init__(self, value):
+        """
+        """
+        self.value = value
+
+    @property
+    def attributes(self):
+        return {'data-ng-maxlength': self.value}
+
+    def alter_schema(self, schema, fqn):
+        if schema['type'] != 'object':
+            schema['maxLength'] = self.value
